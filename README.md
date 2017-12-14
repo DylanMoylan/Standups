@@ -11,7 +11,7 @@ These Standups give students the opportunity to discuss their emotions in an inc
 
 The purpose of this app is to bring this ritual into the digital space, and perhaps to reimagine it for a broader audience. The advantage of a digitized standup is persistence - it allows end users to track their own progress over time and compare and share it with their peers. It provides group leaders with analytics to improve their teaching/developing/etc. process.
 
-## Potential Features:
+### Potential Features:
 
 *   Interactive 'rollercoaster' graph for daily logging
 *   Log of brief + and - daily statements, option to post privately or publicly
@@ -19,6 +19,19 @@ The purpose of this app is to bring this ritual into the digital space, and perh
 *   Group/individual/worldwide timeline of rollercoaster
 *   administrative full CRUD access (add/remove users, add/remove posts, create groups) and ability to push questions and statements to the group
 *   Todo list that uses the graph as a pinpoard, let users chart how they feel about specific tasks
+
+### Possible Technologies:
+
+*   Hopefully prioritize responsive design
+*   React frontend
+*   Node back end probably
+
+*   Passport (wishlist - explore a new auth strategy)
+*   Highcharts - npm react module for easy charts. Not yet sure how difficult live editing in browser will be with this module
+*   Surveymonkey - API for creating surveys
+*   AWS or firebase filehosting (firebase seems simpler)
+*   Indico natural language processing for word cloud
+*   Fontawesome icons
 
 </article>
 
