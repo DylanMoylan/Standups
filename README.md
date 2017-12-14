@@ -104,6 +104,20 @@ The purpose of this app is to bring this ritual into the digital space, and perh
     -   As team leader, I can moderate the group (deleting posts (from public view), removing and adding members, etc)
     -   As Supreme Commander, I can manage the structure of groups and sub-groups, and assign leaders to those groups.
 
+### Wireframes:
+
+#### Home / Splashpage:
+![](https://raw.githubusercontent.com/dylonion/Standups/master/welcome-page.jpg)
+
+#### User Dashboard:
+![](https://raw.githubusercontent.com/dylonion/Standups/master/Dashboard.jpg)
+
+#### Leader Dashboard:
+![](https://raw.githubusercontent.com/dylonion/Standups/master/Leader-dashboard.jpg)
+
+#### Live Standup session:
+![](https://raw.githubusercontent.com/dylonion/Standups/master/Standup-liveSession.jpg)
+
 ### Phases of completion:
 
 #### Phase 1: Setup
