@@ -23,6 +23,7 @@ The purpose of this app is to bring this ritual into the digital space, and perh
 </article>
 
 <article>
+
 ##Code planning:
 
 <div style="background-color: #fef0cf;padding:10px;margin-bottom: 10px;">
@@ -53,4 +54,5 @@ As a team leader, I want to view information about team moral over time and iden
 </div>
 
 </article>
+
 </main>
