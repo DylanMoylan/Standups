@@ -104,6 +104,30 @@ The purpose of this app is to bring this ritual into the digital space, and perh
     -   As team leader, I can moderate the group (deleting posts (from public view), removing and adding members, etc)
     -   As Supreme Commander, I can manage the structure of groups and sub-groups, and assign leaders to those groups.
 
+### Phases of completion:
+
+#### Phase 1: Setup
+  *	Build out backend file structure and backend skeleton code
+  *	Build out frontend file structure frontend skeleton code
+  *	Create DB migrations and seed files
+
+#### Phase 2: MVP essentials
+  *	Authentication
+  * Implementing highcharts and the code for graphing (both create and display)
+  * Full Crud for graphs, wins/losses, add/edit/remove comment, invite/remove user  
+  
+#### Phase 3: Solidify MVP
+  *	Responsive styling
+  *	Wordclouds and natural language processing
+  
+#### Phase 4: Stretch goals:
+ * Implementing sockets for realtime view of results and discussion
+ * Nested groups and organizational heirarchy
+ * Sinegraph pinboard todo app idea
+ * Surveymonkey integration for pushing team questions
+ * Serving features as an API (Slack?)
+ * Allow group leaders to set watchlist of terms
+ 
 </article>
 
 </main>
