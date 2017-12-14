@@ -25,10 +25,9 @@ The purpose of this app is to bring this ritual into the digital space, and perh
 *   Hopefully prioritize responsive design
 *   React frontend
 *   Node back end probably
-
-*   Passport (wishlist - explore a new auth strategy)
-*   Highcharts - npm react module for easy charts. Not yet sure how difficult live editing in browser will be with this module
-*   Surveymonkey - API for creating surveys
+*   Passport (wishlist: explore a new auth strategy)
+*   Highcharts: npm react module for easy charts. Not yet sure how difficult live editing in browser will be with this module
+*   Surveymonkey: API for creating surveys
 *   AWS or firebase filehosting (firebase seems simpler)
 *   Indico natural language processing for word cloud
 *   Fontawesome icons
