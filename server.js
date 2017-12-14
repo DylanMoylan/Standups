@@ -33,10 +33,10 @@ const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`)
 })
-app.get('/', (req, res) => {
-  // res.sendFile(path.join(__dirname, 'public', 'index.html'))
-  console.log('yes')
-})
+// app.get('/', (req, res) => {
+//   // res.sendFile(path.join(__dirname, 'public', 'index.html'))
+//   res.send('yes')
+// })
 
 //===========API ROUTES=========//
 //=============================//

@@ -14,7 +14,11 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS standups (
   id SERIAL PRIMARY KEY,
-  graph_position INT NOT NULL
+  graph_position INT NOT NULL,
+  positives TEXT,
+  negatives TEXT,
+  user_id INTEGER REFERENCES users(id) NOT NULL,
+  time_created TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS groups (
