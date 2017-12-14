@@ -1,0 +1,35 @@
+{
+  "name": "standups",
+  "version": "1.0.0",
+  "description": "App for daily digital standup meetings",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "debugger": "DEBUG=*:* nodemon server.js",
+    "deploy": "cd client && yarn build && cp -a ./build/ ../public/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dylonion/Standups.git"
+  },
+  "author": "Dylan Moylan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dylonion/Standups/issues"
+  },
+  "homepage": "https://github.com/dylonion/Standups#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.2",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.4",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "morgan": "^1.9.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "pg-promise": "^7.3.2"
+  }
+}
