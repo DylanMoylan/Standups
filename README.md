@@ -6,8 +6,11 @@
 
 ## Concept:
 
+<details>
+    <summary>*Background*</summary>
 Each morning, students of General Assembly's Web Immersive program typically gather for 5 minutes or so of self-reflective whiteboarding. Traditionally, the format of an individual's 'Standup' involves 1. A chart of a Sine curve, representing the emotional highs and lows of the learning experience, in which the student plots their own current position, and 2. a sentence summarizing their wins and losses from the previous day. 
 These Standups give students the opportunity to discuss their emotions in an inclusive space, and help to put everyday struggles into the broader perspective of the course as a whole. The graph provides a simple visual to remind the individual that theirs is part of a collective experience.
+</details>
 
 The purpose of this app is to bring this ritual into the digital space, and perhaps to reimagine it for a broader audience. The advantage of a digitized standup is persistence - it allows end users to track their own progress over time and compare and share it with their peers. It provides group leaders with analytics to improve their teaching/developing/etc. process.
 
