@@ -38,8 +38,38 @@ The purpose of this app is to bring this ritual into the digital space, and perh
 
 ## Code planning:
 
-<div style="background-color: #fef0cf;padding:10px;margin-bottom: 10px;">
+### Database Structure:
 
+    users:
+       - id SERIAL PRIMARY KEY
+       - name VARCHAR(255) NOT NULL
+       - email VARCHAR(255) UNIQUE NOT NULL
+       - permissions INT
+       - avatar VARCHAR(255)
+       - password_digest TEXT NOT NULL
+    
+    standups:
+       - id SERIAL PRIMARY KEY
+       - graph_position INT NOT NULL
+       - positives TEXT
+       - negatives TEXT
+       - user_id INTEGER REFERENCES users(id) NOT NULL
+       - time_created TIMESTAMP
+      
+     groups:
+        - id SERIAL PRIMARY KEY
+        - group_name VARCHAR(255)
+        - owner_id INTEGER REFERENCES users(id) NOT NULL
+        - user_id INTEGER REFERENCES users(id) NOT NULL
+      
+      comments:
+         - id SERIAL PRIMARY KEY
+         - comment_body TEXT
+         - from_id REFERENCES users(id) NOT NULL
+         - to_id REFERENCES standups(id) NOT NULL
+         - time_created TIMESTAMP
+         - comment_type VARCHAR(255)
+         
 ### User Stories:
 
    _Team member_
@@ -70,8 +100,6 @@ The purpose of this app is to bring this ritual into the digital space, and perh
     -   As team leader, I can message team members individually about their progress
     -   As team leader, I can moderate the group (deleting posts (from public view), removing and adding members, etc)
     -   As Supreme Commander, I can manage the structure of groups and sub-groups, and assign leaders to those groups.
-
-</div>
 
 </article>
 
