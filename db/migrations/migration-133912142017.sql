@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS groups (
 CREATE TABLE IF NOT EXISTS comments (
   id SERIAL PRIMARY KEY,
   comment_body TEXT,
-  from_id REFERENCES users(id) NOT NULL,
-  to_id REFERENCES standups(id) NOT NULL,
+  from_id INTEGER REFERENCES users(id) NOT NULL,
+  to_id INTEGER REFERENCES standups(id) NOT NULL,
   time_created TIMESTAMP,
   comment_type VARCHAR(255)
 );
