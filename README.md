@@ -11,7 +11,7 @@ These Standups give students the opportunity to discuss their emotions in an inc
 
 The purpose of this app is to bring this ritual into the digital space, and perhaps to reimagine it for a broader audience. The advantage of a digitized standup is persistence - it allows end users to track their own progress over time and compare and share it with their peers. It provides group leaders with analytics to improve their teaching/developing/etc. process.
 
-## [Potential] Features:
+## Potential Features:
 
 *   Interactive 'rollercoaster' graph for daily logging
 *   Log of brief + and - daily statements, option to post privately or publicly
@@ -24,7 +24,7 @@ The purpose of this app is to bring this ritual into the digital space, and perh
 
 <article>
 
-##Code planning:
+## Code planning:
 
 <div style="background-color: #fef0cf;padding:10px;margin-bottom: 10px;">
 
