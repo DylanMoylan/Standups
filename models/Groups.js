@@ -5,52 +5,45 @@ const Groups = {};
 Groups.createGroup = (name, id) => {
   return db.one(`
     INSERT INTO groups
-    (group_name, user_id, biz_id)
+    (group_name, user_id, owner_id)
     VALUES($1,$2,$3)
     RETURNING *
   `,  [name, id, id])
 }
 
-Groups.addToGroup = (group) => {
+Groups.addToGroup = (group, id) => {
   return db.one(`
     INSERT INTO groups
-    (group_name, biz_id, user_id)
+    (group_name, user_id, owner_id)
     VALUES ($1,$2,$3)
     RETURNING *
-  `, [group.group_name, group.biz_id, group.user_id])
+  `, [group.group_name, group.user_id, id])
 }
 
-Groups.showAll = (id) => {
+Groups.index = (name) => {
   return db.query(`
   SELECT groups.*, users.*
   FROM groups
   JOIN users ON users.id = groups.user_id
-  WHERE groups.biz_id = $1
-  `,[id]);
+  WHERE groups.group_name = $1
+  `,[name]);
 }
 
-Groups.removeFromGroup = (groupMember) => {
+Groups.removeFromGroup = (groupMember, id) => {
   return db.none(`
     DELETE FROM groups
     WHERE group_name = $1
     AND user_id = $2
-    AND biz_id = $3
-  `, [groupMember.group_name, groupMember.user_id, groupMember.biz_id])
+    AND owner_id = $3
+  `, [groupMember.group_name, groupMember.user_id, id])
 }
 
-Groups.destroyGroup = (group) => {
+Groups.destroyGroup = (group, id) => {
   return db.none(`
     DELETE FROM groups
     WHERE group_name = $1
-    AND biz_id = $2
-  `, [group.group_name, group.biz_id])
-}
-
-Groups.destroy = id => {
-  return db.none(`
-    DELETE FROM groups
-    WHERE user_id = $1
-  `,id)
+    AND owner_id = $2
+  `, [group, id])
 }
 
 module.exports = Groups;
