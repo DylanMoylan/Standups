@@ -9,12 +9,14 @@ class Standup extends React.Component {
       currentStandup: {
         graph_position: '',
         positives: '',
-        negatives: ''
+        negatives: '',
+        visible: false
       }
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.setGraphPosition = this.setGraphPosition.bind(this)
+    this.showForm = this.showForm.bind(this)
   }
 
   setGraphPosition(num) {
@@ -49,17 +51,27 @@ class Standup extends React.Component {
     .then(res => console.log(res))
   }
 
+  showForm(event) {
+    event.preventDefault()
+    this.setState({
+      visible: !this.state.visible
+    })
+  }
+
   render() {
     return (
       <div className="standup">
         <StandupGraph
           setGraphPosition={this.setGraphPosition}
           curretGraphPosition={this.state.currentStandup.graph_position}
+          showForm={this.showForm}
         />
         <StandupForm
           handleSubmit={this.handleSubmit}
           handleInputChange={this.handleInputChange}
           currentStandup={this.state.currentStandup}
+          visible={this.state.visible}
+          showForm={this.showForm}
         />
       </div>
     )

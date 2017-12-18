@@ -3,6 +3,7 @@ import React from 'react'
 function StandupGraph(props) {
   return (
     <div className="standup-graph" onClick={(e) => {
+      props.showForm(e)
       console.log(e.clientX)
       //props.setGraphPosition(e)
     }}>

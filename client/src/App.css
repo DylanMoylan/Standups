@@ -48,3 +48,6 @@ a {
   border: 1px solid black;
 
 }
+.nodisplay {
+  display:none;
+}
