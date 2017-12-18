@@ -1,6 +1,6 @@
 import React from 'react'
 import Chart from './Chart'
-
+import Standup from './Standup'
 class Dashboard extends React.Component {
   constructor() {
     super()
@@ -26,10 +26,7 @@ class Dashboard extends React.Component {
   render () {
     return (
       <div className="dashboard">
-        <Chart
-          standupHistory={this.state.standupHistory}
-          apiDataLoaded={this.state.apiDataLoaded}
-        />
+        <Standup />
       </div>
     )
   }

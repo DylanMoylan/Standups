@@ -2,17 +2,20 @@ import React from 'react'
 
 function StandupGraph(props) {
   return (
-    <div className="standup-graph" onClick={(e) => {
-      props.showForm(e)
-      console.log(e.clientX)
-      //props.setGraphPosition(e)
-    }}>
-      <div className="gsection graph-section1"></div>
-      <div className="gsection graph-section2"></div>
-      <div className="gsection graph-section3"></div>
-      <div className="gsection graph-section4"></div>
-      <div className="gsection graph-section5"></div>
-    </div>
+    <svg
+      className={props.visible ? 'standup-graph' : 'hide-cursor standup-graph' }
+      onClick={(e) => {
+        props.showForm(e)
+      }}
+      onMouseMove={(e) => {
+        props.setCirclePosition(e.nativeEvent.offsetX)
+      }}
+    >
+    <line x1={props.xoffset ? props.xoffset : "0"} y1="0" x2={props.xoffset ? props.xoffset : "0"} y2="300" strokeWidth="1" stroke="yellow"/>
+    <line x1="0" y1={props.yoffset ? props.yoffset : "0"} x2="300" y2={props.yoffset ? props.yoffset : "300"} strokeWidth="1" stroke="yellow" />
+    <circle cx={props.graph_position.x} cy={props.graph_position.y} r="5" fill="red"/>
+    <path d="M0 80 Q 52.5 10, 95 80 T 180 80" stroke="black" fill="transparent"/>
+    </svg>
   )
 }
 

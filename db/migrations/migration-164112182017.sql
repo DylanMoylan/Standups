@@ -1,0 +1,2 @@
+ALTER TABLE IF EXISTS standups
+ALTER COLUMN graph_position TYPE VARCHAR(255);
