@@ -1,3 +1,6 @@
+html, body, #root, .App {
+  height: 100%;
+}
 .App {
   text-align: center;
 }
@@ -25,4 +28,17 @@
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.fa {
+  font-size: 1.4em;
+}
+.app-info {
+  display: flex;
+  justify-content: space-around;
 }
