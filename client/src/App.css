@@ -3,6 +3,9 @@ html, body, #root, .App {
 }
 .App {
   text-align: center;
+  display: flex;
+  margin-top: 20%;
+  justify-content: center;
 }
 
 .App-logo {
@@ -49,5 +52,135 @@ a {
 
 }
 .nodisplay {
-  display:none;
+  display:none !important;
+}
+
+/*=====Persistent static navbar=====*/
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 99%;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: black;
+  color:white;
+}
+
+header a {
+  text-decoration: none;
+  color: white;
+}
+
+header span {
+  cursor: pointer;
+}
+footer {
+  background-color: black;
+  color:white;
+  padding: 10px;
+  position:fixed;
+  bottom:0px;
+  left:0px;
+  width:100%;
+}
+.header-dropdown {
+  position: absolute;
+  color:black;
+  left:85%;
+  top:7%;
+  border:1px solid black;
+  background-color: white;
+}
+.header-dropdown li {
+  padding: 10px 20px;
+  border-bottom: 1px solid black;
+  cursor: pointer;
+}
+.header-dropdown li:hover {
+  background-color: black;
+  color:white;
+}
+/*==============================*/
+/*==========Form ==============*/
+.loginform {
+  display: flex;
+  flex-direction: column;
+  padding: 0 350px;
+}
+.UserDetails form {
+  display: flex;
+  flex-direction: column;
+  padding: 0 350px;
+}
+.biz-form form {
+  display: flex;
+  flex-direction: column;
+}
+.loginform input {
+  border-bottom: 1px solid black;
+  margin-bottom: 10px;
+}
+
+.biz-form input[type="text"] {
+  border-bottom: 1px solid black;
+  margin-bottom: 10px;
+}
+.UserDetails form input {
+  border-bottom: 1px solid black;
+  margin-bottom: 10px;
+}
+form input {
+  border:none;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+input[type='submit'], .backBtn {
+  border:none;
+  background-color: whitesmoke;
+  color: black;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+input[type='submit']:hover {
+  background-color: #4CAF50;
+  color: whitesmoke;
+}
+
+.backBtn {
+  font-size: inherit;
+  font-weight: inherit;
+  margin:10px 0;
+  font-family: inherit;
+}
+
+.backBtn:hover {
+  background-color: #4CAF50;
+  color: whitesmoke;
+}
+/* input[type='submit'], .search-form-button {
+  border:none;
+  background-color: #7dff7d;
+  cursor: pointer;
+  font-size: inherit;
+  font-weight: inherit;
+  padding: 3px;
+  margin: 0 3px;
+  vertical-align: top;
+  font-family: inherit; */
+
+label {
+  text-align: left;
+}
+#switch-login {
+  display: inline-block;
+  cursor: pointer;
+  color: #677eff;
+}
+
+.title {
+  margin-top: 45px;
 }

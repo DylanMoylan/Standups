@@ -5,7 +5,9 @@ const init = require('./passport');
 const User = require('../../models/User');
 const authHelpers = require('./auth-helpers');
 
-const options = {};
+const options = {
+  usernameField: 'email'
+};
 
 init();
 

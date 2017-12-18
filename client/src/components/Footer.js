@@ -5,7 +5,6 @@ function Footer(props) {
   return (
     <footer>
       <div>
-        Technologies:
         <ul>
           <li><a href="https://github.com/dylonion/Standups"><FontAwesome name="github" /> Github</a></li>
           <li></li>

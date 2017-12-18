@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom'
-import './App.css'
 import './reset.css'
+import './App.css'
 
 //Import custom components
 import Footer from './components/Footer'
@@ -10,7 +10,11 @@ import Splash from './components/Splash'
 import Dashboard from './components/Dashboard'
 import Chart from './components/Chart'
 import Standup from './components/Standup'
-
+(function() {
+  document.querySelector('body').addEventListener('click', function(e) {
+    document.querySelector('.header-dropdown').setAttribute('className','header-dropdown nodisplay')
+  })
+})()
 class App extends Component {
   constructor() {
     super()
@@ -129,20 +133,18 @@ class App extends Component {
         <Route exact path="/Dashboard" render={(props) => {
           return (
             this.state.auth ?
-            <Dashboard />
+            <Dashboard
+              user={this.state.user}
+            />
             : <Redirect push to="/" />
-          )
-          }}
-        />
-        <Route exact path="/chart" render={(props) => {
-          return (
-            <Chart />
           )
           }}
         />
         <Route exact path="/Standup" render={(props) => {
           return (
+            this.state.auth ?
             <Standup />
+            : <Redirect push to="/" />
           )
           }}
         />
