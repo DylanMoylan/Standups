@@ -20,13 +20,13 @@ Comments.create = (comment, id) => {
   `, [comment.comment_body, id, comment.to_id, comment.comment_type])
 }
 
-Comment.index = (id) => {
+Comments.index = (id) => {
   return db.query(`
     SELECT * FROM comments WHERE to_id = $1 OR from_id = $1
   `, [id])
 }
 
-Comment.edit = (comment, id) => {
+Comments.edit = (comment, id) => {
   return db.one(`
     UPDATE comments SET
     comment_body = $1
@@ -35,7 +35,7 @@ Comment.edit = (comment, id) => {
   `,[comment.comment_body, comment.id, id])
 }
 
-Comment.destroy = (id) => {
+Comments.destroy = (id) => {
   return db.none(`
     DELETE FROM comments
     WHERE id = $1

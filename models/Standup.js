@@ -2,8 +2,14 @@ const db = require('../db/config');
 
 const Standup = {}
 
-Standup.global = () => {
-  return db.query('SELECT graph_position FROM standups LIMIT 500')
+Standup.global = (time) => {
+  return db.query(`
+    SELECT standups.graph_position, users.name
+    FROM standups
+    JOIN users on users.id = standups.user_id
+    WHERE time_created::text LIKE $1
+    LIMIT 500
+  `,[time])
 }
 
 Standup.showAllGroup = (id) => {

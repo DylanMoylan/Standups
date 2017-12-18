@@ -42,12 +42,12 @@ app.listen(PORT, () => {
 //=============================//
 const authRoutes = require('./routes/auth-routes')
 app.use('/api/auth', authRoutes)
-// const standupRoutes = require('./routes/standup-routes')
-// app.use('/api/standup', standupRoutes)
-// const groupsRoutes = require('./routes/groups-routes')
-// app.use('/api/groups', groupsRoutes)
-// const commentsRoutes = require('./routes/comments-routes')
-// app.use('/api/comments', commentsRoutes)
+const standupRoutes = require('./routes/standup-routes')
+app.use('/api/standup', standupRoutes)
+const groupsRoutes = require('./routes/groups-routes')
+app.use('/api/groups', groupsRoutes)
+const commentsRoutes = require('./routes/comments-routes')
+app.use('/api/comments', commentsRoutes)
 //=============================//
 //=============================//
 

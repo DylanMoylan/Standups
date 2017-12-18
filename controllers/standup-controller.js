@@ -3,7 +3,10 @@ const Standup = require('../models/Standup')
 const StandupController = {}
 
 StandupController.index = (req, res, next) => {
-  Standup.global()
+  let x = new Date(Date.now())
+  let currentDate = `%${x.getFullYear()}-${x.getMonth()+1}-${x.getDate()}%`
+  console.log(currentDate)
+  Standup.global(currentDate)
   .then(plot => {
     res.json({
       message: 'ok',

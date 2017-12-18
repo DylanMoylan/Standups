@@ -8,6 +8,8 @@ import Footer from './components/Footer'
 import Header from './components/Header'
 import Splash from './components/Splash'
 import Dashboard from './components/Dashboard'
+import Chart from './components/Chart'
+import Standup from './components/Standup'
 
 class App extends Component {
   constructor() {
@@ -129,6 +131,18 @@ class App extends Component {
             this.state.auth ?
             <Dashboard />
             : <Redirect push to="/" />
+          )
+          }}
+        />
+        <Route exact path="/chart" render={(props) => {
+          return (
+            <Chart />
+          )
+          }}
+        />
+        <Route exact path="/Standup" render={(props) => {
+          return (
+            <Standup />
           )
           }}
         />

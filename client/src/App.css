@@ -42,3 +42,9 @@ a {
   display: flex;
   justify-content: space-around;
 }
+.standup-graph {
+  width: 300px;
+  height: 300px;
+  border: 1px solid black;
+
+}

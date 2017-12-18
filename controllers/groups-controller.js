@@ -58,5 +58,5 @@ groupsController.destroyGroup = (req, res, next) => {
   }).catch(next)
 }
 
-module.exports = groupsRoutes
+module.exports = groupsController
 
