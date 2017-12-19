@@ -7,8 +7,7 @@ class Register extends Component {
       this.state = {
        email: '',
        name: '',
-       password: '',
-       group: ''
+       password: ''
     };
    this.handleInputChange = this.handleInputChange.bind(this)
 }
@@ -27,7 +26,6 @@ render() {
             <form className="loginform" onSubmit={(e) => {this.props.handleRegisterSubmit(e, this.state)}}>
                 <input autoComplete="new-password" type="text" name="name" value={this.state.name} placeholder="Full name" onChange={this.handleInputChange} />
                 <input autoComplete="new-password" type="text" name="email" value={this.state.email} placeholder="Email Address" onChange={this.handleInputChange} />
-                <input autoComplete="new-password" type="text" name="group" value={this.state.group} placeholder="Workspace identifier (optional)" onChange={this.handleInputChange} />
                 <input autoComplete="new-password" type="password" name="password" value={this.state.password} placeholder="Password" onChange={this.handleInputChange} />
                 <input type="submit" value="Register" />
             </form>

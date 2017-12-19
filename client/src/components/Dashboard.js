@@ -1,14 +1,15 @@
 import React from 'react'
 import Standup from './Standup'
-import GroupListing from './GroupListing'
 
 class Dashboard extends React.Component {
   constructor() {
     super()
     this.state = {
       standupHistory: {},
-      apiDataLoaded: false
+      apiDataLoaded: false,
+      tokenUrl: null
     }
+    this.getRoomToken = this.getRoomToken.bind(this)
   }
 
   componentDidMount() {
@@ -24,17 +25,22 @@ class Dashboard extends React.Component {
     }).catch(err => console.log(err))
   }
 
+  getRoomToken() {
+    if(!this.state.tokenUrl) {
+      fetch('/genurl')
+      .then(res => res.json())
+      .then(res => {
+        this.setState({
+          tokenUrl: `${document.location.host}?sockettoken=${encodeURIComponent(res.token)}`
+        })
+      })
+    }
+  }
+
   render () {
     return (
       <div className="dashboard">
-        <GroupListing
-          createGroup={this.props.createGroup}
-          groups={this.props.groups}
-          groupsDataLoaded={this.props.groupsDataLoaded}
-          groupToCreate={this.props.groupToCreate}
-          handleInputChange={this.props.handleInputChange}
-        />
-
+        <div className="new-room-btn" onClick={(e) => {this.getRoomToken()}}>{this.state.tokenUrl ? 'Room active - Share url:'+this.state.tokenUrl : 'Create a New Room'}</div>
         <Standup
           standupHistory={this.state.standupHistory}
           apiDataLoaded={this.state.apiDataLoaded}

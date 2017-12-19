@@ -19,58 +19,32 @@ class App extends Component {
       auth: false,
       user: null,
       apiError: null,
-      groupInvite: null,
-      groupInviteReceived: false,
-      groups: null,
-      groupsDataLoaded: false,
-      groupToCreate: ''
+      token: null
     }
-
-    this.handleInputChange = this.handleInputChange.bind(this)
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this)
     this.handleRegisterSubmit = this.handleRegisterSubmit.bind(this)
     this.logout = this.logout.bind(this)
     this.deleteAccount = this.deleteAccount.bind(this)
-    this.createGroup = this.createGroup.bind(this)
   }
+  getParameterByName(name) {
+    var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+  }//https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
 
-  componentWillMount() {
-    if(document.location.search){
-      let code = document.location.search.match(/code=([^&]*)&/g)
-      if(code.length > 0) {
-        console.log(code)
-        fetch(`/api/slack?${code}`).then(res => res.json())
-        .then(res => {
-          console.log(res)
-        }).catch(err => console.log(err))
-      }
+  componentDidMount() {
+    if(document.location.search.length > 0){
+      let token = this.getParameterByName('sockettoken')
+      console.log(typeof(token))
+      this.setState({
+        token: token
+      })
+      socket.emit('giveToken', {
+        token: token
+      })
     }
-    socket.on('receiveGroupInvite', (group) => {
-      console.log('received group invite', group)
-      this.setState({
-        groupInvite: group,
-        groupInviteReceived: true
-      })
+    socket.on('socket-users', (users) => {
+      console.log(users)
     })
-  }
-
-  createGroup(e) {
-    e.preventDefault()
-    fetch('/api/groups/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include',
-      body: JSON.stringify({
-        group_name: this.state.groupToCreate
-      })
-    }).then(res => res.json())
-    .then(res => {
-      this.setState({
-        groups: res.group
-      })
-    }).catch(err => console.log(err))
   }
 
   handleLoginSubmit(e, data) {
@@ -122,28 +96,9 @@ class App extends Component {
             auth: res.auth,
             user: res.data.user
           })
-          if(data.group){
-            fetch(`/api/groups/${data.group}`, {
-              method: 'POST',
-              credentials: 'include',
-              body: data.group
-            }).then(res => res.json())
-            .then(res => {
-              if(res.apiError){
-                this.setState({
-                  apiError: res.apiError,
-                  groupToCreate: res.group_name
-                })
-              }else{
-                this.setState({
-                  group: res.group
-                })
-              }
-            }).catch(err => console.log(err))
-          }
         }
       }).catch(err => console.log(err))
-  }
+    }
 
   logout() {
     fetch('/api/auth/logout', {
@@ -175,13 +130,6 @@ class App extends Component {
     }
   }
 
-  handleInputChange(e) {
-    const value = e.target.value;
-    this.setState({
-        groupToCreate: value
-    });
-  }
-
   render() {
     return (
       <Router>
@@ -207,11 +155,6 @@ class App extends Component {
             <Dashboard
               user={this.state.user}
               apiError={this.state.apiError}
-              createGroup={this.createGroup}
-              groups={this.state.groups}
-              handleInputChange={this.handleInputChange}
-              groupsDataLoaded={this.state.groupsDataLoaded}
-              groupToCreate={this.state.groupToCreate}
             />
             : <Redirect push to="/" />
           )

@@ -4,6 +4,11 @@ function comparePass(userPassword, databasePassword) {
   return bcrypt.compareSync(userPassword, databasePassword);
 }
 
+function genUrl(req, res, next) {
+  res.locals.newRoom = bcrypt.genSaltSync()
+  next()
+}
+
 function findGroup(req, res, next) {
   Groups.findGroup(req.body.group)
   .then(group => {
@@ -25,4 +30,5 @@ function findGroup(req, res, next) {
 module.exports = {
   comparePass,
   findGroup,
+  genUrl,
 }
