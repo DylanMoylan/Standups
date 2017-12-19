@@ -17,7 +17,7 @@ class Dashboard extends React.Component {
     .then(res => res.json())
     .then(res => {
       this.setState({
-        standupHistory: res,
+        standupHistory: res.data,
         apiDataLoaded: true
       })
     }).catch(err => console.log(err))
@@ -26,7 +26,10 @@ class Dashboard extends React.Component {
   render () {
     return (
       <div className="dashboard">
-        <Standup />
+        <Standup
+          standupHistory={this.state.standupHistory}
+          apiDataLoaded={this.state.apiDataLoaded}
+        />
       </div>
     )
   }

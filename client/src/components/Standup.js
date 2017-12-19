@@ -29,7 +29,9 @@ class Standup extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchDaily()
+    if(!this.props.apiDataLoaded){
+      this.fetchDaily()
+    }
   }
 
   fetchDaily() {
@@ -59,7 +61,7 @@ class Standup extends React.Component {
     }).catch(err => console.log(err))
   }
 
-  showInfoBox(event, toggle) {
+  showInfoBox(event, toggle, id) {
     if(toggle){
       let x = event.nativeEvent.clientX;
       let y = event.nativeEvent.clientY;
@@ -69,6 +71,12 @@ class Standup extends React.Component {
           top: y
         }
       })
+      if(id) {
+        let findSelectedStandup = this.props.standupHistory.find((el) => el.id === id)
+        this.setState({
+          currentStandup: findSelectedStandup
+        })
+      }
     }else{
       this.setState({
         infoBoxShown: false
@@ -130,6 +138,8 @@ class Standup extends React.Component {
     return (
       <div className="standup">
         <StandupGraph
+          standupHistory={this.props.standupHistory}
+          apiDataLoaded={this.props.apiDataLoaded}
           graph_position={this.state.currentStandup.graph_position}
           showForm={this.showForm}
           setCirclePosition={this.setCirclePosition}
@@ -141,7 +151,6 @@ class Standup extends React.Component {
           showInfoBox={this.showInfoBox}
         />
         <Infobox
-          showInfoBox={this.showInfoBox}
           infoBoxShown={this.state.infoBoxShown}
           currentStandup={this.state.currentStandup}
         />
