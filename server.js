@@ -6,7 +6,6 @@ const path = require('path')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
-const cors = require('cors')
 const passport = require('passport')
 const app = express()
 require('dotenv').config()
@@ -27,6 +26,29 @@ app.use(passport.session())
 app.use(express.static('public'))
 //=============================//
 //=============================//
+
+
+/*=====SOCKET.IO CODE=======*/
+//=========================//
+const http = require('http').Server(app)
+var io = require('socket.io')(http);
+const connectedUsers = {}
+io.on('connection', function(client){
+  connectedUsers[client.id] = {}
+  io.emit('receiveGroupInvite', {
+    groupName: 'abcdefg'
+  })
+  console.log('a user connected');
+  client.on('disconnect', () => {
+    delete players[client.id]
+  })
+});
+
+http.listen(3002, () => {
+  console.log('Server listening on port 3002')
+})
+//=========================//
+//=========================//
 
 
 const PORT = process.env.PORT || 3001

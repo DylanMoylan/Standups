@@ -9,6 +9,8 @@ import Header from './components/Header'
 import Splash from './components/Splash'
 import Dashboard from './components/Dashboard'
 import Standup from './components/Standup'
+import openSocket from 'socket.io-client'
+const socket = openSocket('http://localhost:3002')
 
 class App extends Component {
   constructor() {
@@ -16,12 +18,24 @@ class App extends Component {
     this.state = {
       auth: false,
       user: null,
-      apiError: null
+      apiError: null,
+      groupInvite: null,
+      groupInviteReceived: false
     }
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this)
     this.handleRegisterSubmit = this.handleRegisterSubmit.bind(this)
     this.logout = this.logout.bind(this)
     this.deleteAccount = this.deleteAccount.bind(this)
+  }
+
+  componentWillMount() {
+    socket.on('receiveGroupInvite', (group) => {
+      console.log('received group invite', group)
+      this.setState({
+        groupInvite: group,
+        groupInviteReceived: true
+      })
+    })
   }
 
   handleLoginSubmit(e, data) {
