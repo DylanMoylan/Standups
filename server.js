@@ -48,6 +48,8 @@ const groupsRoutes = require('./routes/groups-routes')
 app.use('/api/groups', groupsRoutes)
 const commentsRoutes = require('./routes/comments-routes')
 app.use('/api/comments', commentsRoutes)
+const slackRoutes = require('./routes/slack-routes')
+app.use('/api/slack', slackRoutes)
 //=============================//
 //=============================//
 

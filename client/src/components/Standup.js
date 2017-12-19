@@ -1,6 +1,7 @@
 import React from 'react'
 import StandupForm from './StandupForm'
 import StandupGraph from './StandupGraph'
+import Infobox from './Infobox'
 
 class Standup extends React.Component {
   constructor(){
@@ -17,12 +18,14 @@ class Standup extends React.Component {
         dailySet: false
       },
       xoffset: 0,
-      yoffset: 0
+      yoffset: 0,
+      infoBoxShown: false,
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.showForm = this.showForm.bind(this)
     this.setCirclePosition = this.setCirclePosition.bind(this)
+    this.showInfoBox = this.showInfoBox.bind(this)
   }
 
   componentDidMount() {
@@ -46,7 +49,9 @@ class Standup extends React.Component {
               y: y
             },
             positives: res.data[0].positives,
-            negatives: res.data[0].negatives
+            negatives: res.data[0].negatives,
+            email: res.data[0].email,
+            time_created: res.data[0].time_created
           },
           dailySet: true
         })
@@ -54,9 +59,27 @@ class Standup extends React.Component {
     }).catch(err => console.log(err))
   }
 
+  showInfoBox(event, toggle) {
+    if(toggle){
+      let x = event.nativeEvent.clientX;
+      let y = event.nativeEvent.clientY;
+      this.setState({
+        infoBoxShown: {
+          left: x,
+          top: y
+        }
+      })
+    }else{
+      this.setState({
+        infoBoxShown: false
+      })
+    }
+  }
+
   setCirclePosition(e) {
     if(!this.state.visible){
       let x = document.querySelector('path').getPointAtLength(e)
+      console.log(x)
       this.setState((prevState, props) => {
         return {
           currentStandup: Object.assign({}, prevState.currentStandup, {graph_position: {x: x.x, y: x.y}}),
@@ -115,6 +138,12 @@ class Standup extends React.Component {
           yoffset={this.state.yoffset}
           dailySet={this.state.dailySet}
           editable={true}
+          showInfoBox={this.showInfoBox}
+        />
+        <Infobox
+          showInfoBox={this.showInfoBox}
+          infoBoxShown={this.state.infoBoxShown}
+          currentStandup={this.state.currentStandup}
         />
         <StandupForm
           handleSubmit={this.handleSubmit}

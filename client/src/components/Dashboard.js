@@ -1,6 +1,6 @@
 import React from 'react'
-import Chart from './Chart'
 import Standup from './Standup'
+
 class Dashboard extends React.Component {
   constructor() {
     super()

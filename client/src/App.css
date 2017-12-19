@@ -21,8 +21,8 @@ a {
 }
 
 .standup-graph {
-  width: 400px;
-  height: 250px;
+  width: 600px;
+  height: 300px;
   border: 1px solid black;
 
 }
@@ -30,6 +30,9 @@ a {
   display:none !important;
 }
 
+.hoverable:hover {
+  outline: -webkit-focus-ring-color auto 5px;
+}
 /*=====Persistent static navbar=====*/
 /*header {
   position: fixed;
@@ -147,4 +150,8 @@ label {
 
 .title {
   margin-top: 45px;
+}
+
+.info-box {
+  position: absolute;
 }

@@ -1,10 +1,12 @@
 import React from 'react'
-
+//<line x1={props.xoffset ? props.xoffset : "0"} y1="0" x2={props.xoffset ? props.xoffset : "0"} y2="300" strokeWidth="1" stroke="yellow"/>
+// <line x1="0" y1={props.yoffset ? props.yoffset : "0"} x2="300" y2={props.yoffset ? props.yoffset : "300"} strokeWidth="1" stroke="yellow" />
 function StandupGraph(props) {
   return (
     <svg
       className="standup-graph"
       onClick={(e) => {
+        props.showInfoBox(e, false)
         if(!props.dailySet){
           props.showForm(e)
         }
@@ -15,10 +17,20 @@ function StandupGraph(props) {
         }
       }}
     >
-    <line x1={props.xoffset ? props.xoffset : "0"} y1="0" x2={props.xoffset ? props.xoffset : "0"} y2="300" strokeWidth="1" stroke="yellow"/>
-    <line x1="0" y1={props.yoffset ? props.yoffset : "0"} x2="300" y2={props.yoffset ? props.yoffset : "300"} strokeWidth="1" stroke="yellow" />
-    <circle cx={props.graph_position.x} cy={props.graph_position.y} r="5" fill="red"/>
-    <path d="M0 80 Q 52.5 10, 95 80 T 180 80" stroke="black" fill="transparent"/>
+    <circle
+      cx={props.graph_position.x}
+      cy={props.graph_position.y}
+      r="5"
+      fill="red"
+      className={props.dailySet ? 'circle hoverable' : 'circle'}
+      onClick={(e) => {
+        e.stopPropagation()
+        if(props.dailySet){
+          props.showInfoBox(e, true)
+        }
+      }}
+    />
+    <path d="M1 160 C 90 30, 130 20, 190 160 S 300 300, 369 160" stroke="black" fill="transparent"/>
     </svg>
   )
 }
