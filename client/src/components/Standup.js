@@ -13,7 +13,8 @@ class Standup extends React.Component {
         },
         positives: '',
         negatives: '',
-        visible: false
+        visible: false,
+        dailySet: false
       },
       xoffset: 0,
       yoffset: 0
@@ -22,6 +23,35 @@ class Standup extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this)
     this.showForm = this.showForm.bind(this)
     this.setCirclePosition = this.setCirclePosition.bind(this)
+  }
+
+  componentDidMount() {
+    this.fetchDaily()
+  }
+
+  fetchDaily() {
+    fetch(`/api/standup/daily`, {
+      credentials: 'include'
+    })
+    .then(res => res.json())
+    .then(res => {
+      if(res.data.length > 0) {
+        let positions = res.data[0].graph_position.split(',')
+        let x = positions[0]
+        let y = positions[1]
+        this.setState({
+          currentStandup: {
+            graph_position: {
+              x: x,
+              y: y
+            },
+            positives: res.data[0].positives,
+            negatives: res.data[0].negatives
+          },
+          dailySet: true
+        })
+      }
+    }).catch(err => console.log(err))
   }
 
   setCirclePosition(e) {
@@ -63,6 +93,7 @@ class Standup extends React.Component {
     })
     .then(res => res.json())
     .then(res => console.log(res))
+    .then(this.fetchDaily())
   }
 
   showForm(event) {
@@ -82,6 +113,8 @@ class Standup extends React.Component {
           visible={this.state.visible}
           xoffset={this.state.xoffset}
           yoffset={this.state.yoffset}
+          dailySet={this.state.dailySet}
+          editable={true}
         />
         <StandupForm
           handleSubmit={this.handleSubmit}

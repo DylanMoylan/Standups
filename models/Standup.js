@@ -35,4 +35,8 @@ Standup.show = (id) => {
   return db.query(`SELECT * FROM standups where user_id = $1`, [id])
 }
 
+Standup.daily = (id, time) => {
+  return db.query(`SELECT * FROM standups where user_id = $1 AND time_created::text LIKE $2`, [id, time])
+}
+
 module.exports = Standup

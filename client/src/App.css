@@ -1,9 +1,9 @@
-.App {
-  text-align: center;
+body, html {
+  font-family: 'Open Sans', sans-serif;
 }
 
-.App-title {
-  font-size: 1.5em;
+.App {
+  text-align: center;
 }
 
 a {
@@ -14,10 +14,12 @@ a {
 .fa {
   font-size: 1.4em;
 }
+
 .app-info {
   display: flex;
   justify-content: space-around;
 }
+
 .standup-graph {
   width: 400px;
   height: 250px;
@@ -50,6 +52,7 @@ header a {
 header span {
   cursor: pointer;
 }
+
 footer {
   background-color: black;
   color:white;
@@ -59,6 +62,7 @@ footer {
   left:0px;
   width:100%;
 }
+
 .header-dropdown {
   position: absolute;
   color:black;
@@ -67,15 +71,18 @@ footer {
   border:1px solid black;
   background-color: white;
 }
+
 .header-dropdown li {
   padding: 10px 20px;
   border-bottom: 1px solid black;
   cursor: pointer;
 }
+
 .header-dropdown li:hover {
   background-color: black;
   color:white;
 }
+
 /*==============================*/
 /*==========Form ==============*/
 .loginform {
@@ -83,28 +90,12 @@ footer {
   flex-direction: column;
   padding: 0 350px;
 }
-.UserDetails form {
-  display: flex;
-  flex-direction: column;
-  padding: 0 350px;
-}
-.biz-form form {
-  display: flex;
-  flex-direction: column;
-}
+
 .loginform input {
   border-bottom: 1px solid black;
   margin-bottom: 10px;
 }
 
-.biz-form input[type="text"] {
-  border-bottom: 1px solid black;
-  margin-bottom: 10px;
-}
-.UserDetails form input {
-  border-bottom: 1px solid black;
-  margin-bottom: 10px;
-}
 form input {
   border:none;
   font-family: inherit;
@@ -156,8 +147,4 @@ label {
 
 .title {
   margin-top: 45px;
-}
-
-.hide-cursor {
-  cursor: none;
 }
