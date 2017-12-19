@@ -24,9 +24,9 @@ render() {
     return (
        <div className="login">
             <form className="loginform" onSubmit={(e) => {this.props.handleRegisterSubmit(e, this.state)}}>
-                <input type="text" name="name" value={this.state.name} placeholder="Full name" onChange={this.handleInputChange} />
-                <input type="text" name="email" value={this.state.email} placeholder="Email Address" onChange={this.handleInputChange} />
-                <input type="password" name="password" value={this.state.password} placeholder="Password" onChange={this.handleInputChange} />
+                <input autoComplete="new-password" type="text" name="name" value={this.state.name} placeholder="Full name" onChange={this.handleInputChange} />
+                <input autoComplete="new-password" type="text" name="email" value={this.state.email} placeholder="Email Address" onChange={this.handleInputChange} />
+                <input autoComplete="new-password" type="password" name="password" value={this.state.password} placeholder="Password" onChange={this.handleInputChange} />
                 <input type="submit" value="Register" />
             </form>
             <div id="switch-login" onClick={this.props.setAuthDisplay}>Already have an account?</div>

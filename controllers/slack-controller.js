@@ -5,7 +5,7 @@ const slackController = {};
 slackController.returnSlackList = (req, res, next) => {
   res.json({
     message: 'ok',
-    data: res.locals
+    data: res.locals.slack
   })
 }
 

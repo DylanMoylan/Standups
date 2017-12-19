@@ -87,7 +87,6 @@ class Standup extends React.Component {
   setCirclePosition(e) {
     if(!this.state.visible){
       let x = document.querySelector('path').getPointAtLength(e)
-      console.log(x)
       this.setState((prevState, props) => {
         return {
           currentStandup: Object.assign({}, prevState.currentStandup, {graph_position: {x: x.x, y: x.y}}),

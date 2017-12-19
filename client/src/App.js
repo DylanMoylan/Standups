@@ -9,6 +9,8 @@ import Header from './components/Header'
 import Splash from './components/Splash'
 import Dashboard from './components/Dashboard'
 import Standup from './components/Standup'
+import openSocket from 'socket.io-client'
+const socket = openSocket('http://localhost:3002')
 
 class App extends Component {
   constructor() {
@@ -16,12 +18,33 @@ class App extends Component {
     this.state = {
       auth: false,
       user: null,
-      apiError: null
+      apiError: null,
+      token: null
     }
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this)
     this.handleRegisterSubmit = this.handleRegisterSubmit.bind(this)
     this.logout = this.logout.bind(this)
     this.deleteAccount = this.deleteAccount.bind(this)
+  }
+  getParameterByName(name) {
+    var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+  }//https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+
+  componentDidMount() {
+    if(document.location.search.length > 0){
+      let token = this.getParameterByName('sockettoken')
+      console.log(typeof(token))
+      this.setState({
+        token: token
+      })
+      socket.emit('giveToken', {
+        token: token
+      })
+    }
+    socket.on('socket-users', (users) => {
+      console.log(users)
+    })
   }
 
   handleLoginSubmit(e, data) {
@@ -75,7 +98,7 @@ class App extends Component {
           })
         }
       }).catch(err => console.log(err))
-  }
+    }
 
   logout() {
     fetch('/api/auth/logout', {
@@ -131,6 +154,7 @@ class App extends Component {
             this.state.auth ?
             <Dashboard
               user={this.state.user}
+              apiError={this.state.apiError}
             />
             : <Redirect push to="/" />
           )

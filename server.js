@@ -6,7 +6,6 @@ const path = require('path')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
-const cors = require('cors')
 const passport = require('passport')
 const app = express()
 require('dotenv').config()
@@ -27,6 +26,51 @@ app.use(passport.session())
 app.use(express.static('public'))
 //=============================//
 //=============================//
+
+
+/*=====SOCKET.IO CODE=======*/
+//=========================//
+const rooms = {}
+const authHelpers = require('./services/auth/auth-helpers')
+app.get('/genurl', authHelpers.genUrl, (req, res) => {
+  rooms[res.locals.newRoom] = []
+  res.json({
+    message: 'Room created',
+    token: res.locals.newRoom
+  })
+})
+const http = require('http').Server(app)
+var io = require('socket.io')(http);
+const connectedUsers = {}
+io.on('connection', function(client){
+  console.log('a user connected');
+  client.on('giveToken', (data) => {
+    console.log(data)
+    let instantiateUser = Object.keys(rooms).find(el => el === data.token)
+      if(instantiateUser){
+        rooms[data.token].push({
+          id: client.id
+        })
+      }else{
+        rooms[data.token] = [{
+          id: client.id
+        }]
+      }
+      rooms[data.token].forEach((el) => {
+        io.to(el.id).emit('socket-users', rooms[data.token])
+      })
+    })
+    client.on('disconnect', () => {
+      console.log('a client disconnected')
+      delete connectedUsers[client.id]
+    })
+  })
+
+http.listen(3002, () => {
+  console.log('Server listening on port 3002')
+})
+//=========================//
+//=========================//
 
 
 const PORT = process.env.PORT || 3001

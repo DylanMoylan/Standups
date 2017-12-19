@@ -1,6 +1,5 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import FontAwesome from 'react-fontawesome'
 
 function Dropdown(props) {
   return (
@@ -38,7 +37,7 @@ class Header extends React.Component {
     return (
       <header>
         <Link to="/"><div className="logo">Home</div></Link>
-        <FontAwesome name="bars" onClick={this.toggleDropdown}/>
+        <div onClick={this.toggleDropdown}>Hamburger</div>
         <Dropdown
           toggleDropdown={this.toggleDropdown}
           logout={this.props.logout}
