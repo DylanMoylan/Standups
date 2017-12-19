@@ -10,11 +10,7 @@ import Splash from './components/Splash'
 import Dashboard from './components/Dashboard'
 import Chart from './components/Chart'
 import Standup from './components/Standup'
-(function() {
-  document.querySelector('body').addEventListener('click', function(e) {
-    document.querySelector('.header-dropdown').setAttribute('className','header-dropdown nodisplay')
-  })
-})()
+
 class App extends Component {
   constructor() {
     super()
@@ -63,6 +59,7 @@ class App extends Component {
       headers: {
         'Content-Type': 'application/json'
       },
+      credentials: 'include',
       body: JSON.stringify(data)
     }).then(res => res.json())
       .then(res => {

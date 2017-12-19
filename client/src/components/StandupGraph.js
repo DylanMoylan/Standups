@@ -3,12 +3,16 @@ import React from 'react'
 function StandupGraph(props) {
   return (
     <svg
-      className={props.visible ? 'standup-graph' : 'hide-cursor standup-graph' }
+      className="standup-graph"
       onClick={(e) => {
-        props.showForm(e)
+        if(!props.dailySet){
+          props.showForm(e)
+        }
       }}
       onMouseMove={(e) => {
-        props.setCirclePosition(e.nativeEvent.offsetX)
+        if(!props.dailySet){
+          props.setCirclePosition(e.nativeEvent.offsetX)
+        }
       }}
     >
     <line x1={props.xoffset ? props.xoffset : "0"} y1="0" x2={props.xoffset ? props.xoffset : "0"} y2="300" strokeWidth="1" stroke="yellow"/>

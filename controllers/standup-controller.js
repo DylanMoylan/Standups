@@ -49,4 +49,17 @@ StandupController.show = (req, res, next) => {
     }).catch(next)
 }
 
+StandupController.daily = (req, res, next) => {
+  let x = new Date(Date.now())
+  let currentDate = `%${x.getFullYear()}-${x.getMonth()+1}-${x.getDate()}%`
+  Standup.daily(req.user.id, currentDate)
+  .then(data => {
+    console.log(data)
+    res.json({
+      message: 'ok',
+      data
+    })
+  }).catch(next)
+}
+
 module.exports = StandupController
