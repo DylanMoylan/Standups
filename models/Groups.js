@@ -12,7 +12,7 @@ Groups.createGroup = (name, id) => {
 }
 Groups.findGroup = (name) => {
   return db.query(`
-    SELECT COUNT(id)
+    SELECT owner_id
     FROM groups
     WHERE group_name = $1
   `,[name])
@@ -21,10 +21,10 @@ Groups.findGroup = (name) => {
 Groups.addToGroup = (group, id) => {
   return db.one(`
     INSERT INTO groups
-    (group_name, user_id, owner_id)
+    (group_name, owner_id, user_id)
     VALUES ($1,$2,$3)
     RETURNING *
-  `, [group.group_name, group.user_id, id])
+  `, [group.group_name, group.owner_id, id])
 }
 
 Groups.index = (name) => {

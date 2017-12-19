@@ -22,26 +22,29 @@ class App extends Component {
       groupInvite: null,
       groupInviteReceived: false,
       groups: null,
-      groupsDataLoaded: false
+      groupsDataLoaded: false,
+      groupToCreate: ''
     }
 
+    this.handleInputChange = this.handleInputChange.bind(this)
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this)
     this.handleRegisterSubmit = this.handleRegisterSubmit.bind(this)
     this.logout = this.logout.bind(this)
     this.deleteAccount = this.deleteAccount.bind(this)
+    this.createGroup = this.createGroup.bind(this)
   }
 
   componentWillMount() {
-    // if(document.location.search){
-    //   let code = document.location.search.match(/code=([^&]*)&/g)
-    //   if(code.length > 0) {
-    //     console.log(code)
-    //     fetch(`/api/slack?${code}`).then(res => res.json())
-    //     .then(res => {
-    //       console.log(res)
-    //     }).catch(err => console.log(err))
-    //   }
-    // }
+    if(document.location.search){
+      let code = document.location.search.match(/code=([^&]*)&/g)
+      if(code.length > 0) {
+        console.log(code)
+        fetch(`/api/slack?${code}`).then(res => res.json())
+        .then(res => {
+          console.log(res)
+        }).catch(err => console.log(err))
+      }
+    }
     socket.on('receiveGroupInvite', (group) => {
       console.log('received group invite', group)
       this.setState({
@@ -49,6 +52,25 @@ class App extends Component {
         groupInviteReceived: true
       })
     })
+  }
+
+  createGroup(e) {
+    e.preventDefault()
+    fetch('/api/groups/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        group_name: this.state.groupToCreate
+      })
+    }).then(res => res.json())
+    .then(res => {
+      this.setState({
+        groups: res.group
+      })
+    }).catch(err => console.log(err))
   }
 
   handleLoginSubmit(e, data) {
@@ -100,16 +122,25 @@ class App extends Component {
             auth: res.auth,
             user: res.data.user
           })
-          fetch(`/api/groups/${data.group}`, {
-            method: 'POST',
-            credentials: 'include',
-            body: data.group
-          }).then(res => res.json())
+          if(data.group){
+            fetch(`/api/groups/${data.group}`, {
+              method: 'POST',
+              credentials: 'include',
+              body: data.group
+            }).then(res => res.json())
             .then(res => {
-              this.setState({
-                group: res.group
-              })
+              if(res.apiError){
+                this.setState({
+                  apiError: res.apiError,
+                  groupToCreate: res.group_name
+                })
+              }else{
+                this.setState({
+                  group: res.group
+                })
+              }
             }).catch(err => console.log(err))
+          }
         }
       }).catch(err => console.log(err))
   }
@@ -144,6 +175,13 @@ class App extends Component {
     }
   }
 
+  handleInputChange(e) {
+    const value = e.target.value;
+    this.setState({
+        groupToCreate: value
+    });
+  }
+
   render() {
     return (
       <Router>
@@ -168,6 +206,12 @@ class App extends Component {
             this.state.auth ?
             <Dashboard
               user={this.state.user}
+              apiError={this.state.apiError}
+              createGroup={this.createGroup}
+              groups={this.state.groups}
+              handleInputChange={this.handleInputChange}
+              groupsDataLoaded={this.state.groupsDataLoaded}
+              groupToCreate={this.state.groupToCreate}
             />
             : <Redirect push to="/" />
           )
@@ -181,13 +225,6 @@ class App extends Component {
           )
           }}
         />
-        <div onClick={(e) => {
-            console.log('clicked')
-            socket.emit('test', {
-              a_test:'testing'
-            })
-          }}
-        >Click me</div>
         <Footer />
         </div>
       </Router>

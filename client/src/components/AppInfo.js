@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom'
 // <div>
 //         <p>Some Basic info about the app.</p>
 //       </div>

@@ -1,5 +1,6 @@
 import React from 'react'
 import Standup from './Standup'
+import GroupListing from './GroupListing'
 
 class Dashboard extends React.Component {
   constructor() {
@@ -26,6 +27,14 @@ class Dashboard extends React.Component {
   render () {
     return (
       <div className="dashboard">
+        <GroupListing
+          createGroup={this.props.createGroup}
+          groups={this.props.groups}
+          groupsDataLoaded={this.props.groupsDataLoaded}
+          groupToCreate={this.props.groupToCreate}
+          handleInputChange={this.props.handleInputChange}
+        />
+
         <Standup
           standupHistory={this.state.standupHistory}
           apiDataLoaded={this.state.apiDataLoaded}

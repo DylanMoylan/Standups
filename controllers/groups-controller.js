@@ -4,8 +4,8 @@ const groupsController = {};
 
 groupsController.addToGroup = (req, res, next) => {
   Group.addToGroup({
-    group_name: req.body.group_name,
-    user_id: req.params.id
+    group_name: req.params.id,
+    owner_id: res.locals.group
   }, req.user.id)
   .then(group => {
     res.json({
