@@ -39,8 +39,11 @@ io.on('connection', function(client){
     groupName: 'abcdefg'
   })
   console.log('a user connected');
+  client.on('test', (test) => {
+    console.log(test)
+  })
   client.on('disconnect', () => {
-    delete players[client.id]
+    delete connectedUsers[client.id]
   })
 });
 

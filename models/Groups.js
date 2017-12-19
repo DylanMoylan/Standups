@@ -10,6 +10,13 @@ Groups.createGroup = (name, id) => {
     RETURNING *
   `,  [name, id, id])
 }
+Groups.findGroup = (name) => {
+  return db.query(`
+    SELECT COUNT(id)
+    FROM groups
+    WHERE group_name = $1
+  `,[name])
+}
 
 Groups.addToGroup = (group, id) => {
   return db.one(`

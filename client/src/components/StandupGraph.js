@@ -23,6 +23,7 @@ function StandupGraph(props) {
         let positions = el.graph_position.split(',')
         return (
           <circle
+            key={el.id}
             cx={positions[0]}
             cy={positions[1]}
             r="5"

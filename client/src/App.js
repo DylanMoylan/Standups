@@ -20,8 +20,11 @@ class App extends Component {
       user: null,
       apiError: null,
       groupInvite: null,
-      groupInviteReceived: false
+      groupInviteReceived: false,
+      groups: null,
+      groupsDataLoaded: false
     }
+
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this)
     this.handleRegisterSubmit = this.handleRegisterSubmit.bind(this)
     this.logout = this.logout.bind(this)
@@ -29,6 +32,16 @@ class App extends Component {
   }
 
   componentWillMount() {
+    // if(document.location.search){
+    //   let code = document.location.search.match(/code=([^&]*)&/g)
+    //   if(code.length > 0) {
+    //     console.log(code)
+    //     fetch(`/api/slack?${code}`).then(res => res.json())
+    //     .then(res => {
+    //       console.log(res)
+    //     }).catch(err => console.log(err))
+    //   }
+    // }
     socket.on('receiveGroupInvite', (group) => {
       console.log('received group invite', group)
       this.setState({
@@ -87,6 +100,16 @@ class App extends Component {
             auth: res.auth,
             user: res.data.user
           })
+          fetch(`/api/groups/${data.group}`, {
+            method: 'POST',
+            credentials: 'include',
+            body: data.group
+          }).then(res => res.json())
+            .then(res => {
+              this.setState({
+                group: res.group
+              })
+            }).catch(err => console.log(err))
         }
       }).catch(err => console.log(err))
   }
@@ -158,6 +181,13 @@ class App extends Component {
           )
           }}
         />
+        <div onClick={(e) => {
+            console.log('clicked')
+            socket.emit('test', {
+              a_test:'testing'
+            })
+          }}
+        >Click me</div>
         <Footer />
         </div>
       </Router>
