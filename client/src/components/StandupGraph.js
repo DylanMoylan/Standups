@@ -30,43 +30,51 @@ function StandupGraph(props) {
             fill="red"
             className="circle hoverable"
             onClick={(e) => {
-              e.stopPropagation()
-              props.showInfoBox(e, true, el.id)
+              props.showInfoBox(e, !props.infoBoxShown, el.id, {x:positions[0],y:positions[1]})
             }}
           />
         )
       })
       :
-      <circle
-        cx={props.graph_position.x}
-        cy={props.graph_position.y}
+      (props.dailySet ? '' :
+        <circle
+        cx={props.currentStandup.graph_position.x}
+        cy={props.currentStandup.graph_position.y}
         r="5"
         fill="red"
-        className={props.dailySet ? 'circle hoverable' : 'circle'}
+        className={props.dailySet ? `circle hoverable circle-${props.currentStandup.id}` : `circle circle-${props.currentStandup.id}`}
         onClick={(e) => {
-          e.stopPropagation()
           if(props.dailySet){
-            props.showInfoBox(e, true)
+            props.showInfoBox(e, !props.infoBoxShown, props.currentStandup.id)
           }
         }}
       />
+      )
     }
     {
       props.connectedUsers ?
         props.connectedUsers.map((el) => {
-          if(el.name !== props.name) {
-            return <circle
+          if(el.name !== props.name && el.graph_position) {
+            return (
+                    <g>
+                    <circle
+                      cx={el.graph_position.x}
+                      cy={el.graph_position.y}
+                      r="15"
+                      fill="transparent"
+                      className="circle-container"
+                      onClick={(e) => {
+                        props.showInfoBox(e, !props.infoBoxShown, el.id)
+                      }}
+                    />
+                    <circle
                       key={el.id}
                       cx={el.graph_position.x}
                       cy={el.graph_position.y}
                       r="5"
-                      fill="blue"
-                      className="circle hoverable"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        props.showInfoBox(e, true, el.id)
-                      }}
-                    />
+                      fill={el.color}
+                      className={`circle hoverable circle-${el.id}`}
+                    /></g>)
           }
         })
       :

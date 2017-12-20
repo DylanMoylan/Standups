@@ -81,13 +81,15 @@ class Standup extends React.Component {
   }
 
   showInfoBox(event, toggle, id) {
+    event.stopPropagation()
     if(toggle){
-      let x = event.nativeEvent.clientX;
-      let y = event.nativeEvent.clientY;
+      // let x = event.nativeEvent.clientX;
+      // let y = event.nativeEvent.clientY;
+      let bound = document.querySelector(`.circle-${id}`).getBoundingClientRect()
       this.setState({
         infoBoxShown: {
-          left: x,
-          top: y
+          left: bound.x + bound.width,
+          top: bound.y + bound.height
         }
       })
       if(id) {
@@ -170,11 +172,13 @@ class Standup extends React.Component {
       <div className="standup">
         <UsersConnected
           connectedUsers={this.state.connectedUsers}
+          showInfoBox={this.showInfoBox}
+          infoBoxShown={this.state.infoBoxShown}
         />
         <StandupGraph
+          currentStandup={this.state.currentStandup}
           standupHistory={this.props.standupHistory}
           apiDataLoaded={this.props.apiDataLoaded}
-          graph_position={this.state.currentStandup.graph_position}
           showForm={this.showForm}
           setCirclePosition={this.setCirclePosition}
           visible={this.state.visible}
@@ -183,8 +187,8 @@ class Standup extends React.Component {
           dailySet={this.state.dailySet}
           editable={true}
           showInfoBox={this.showInfoBox}
+          infoBoxShown={this.state.infoBoxShown}
           connectedUsers={this.state.connectedUsers}
-          name={this.state.currentStandup.name}
         />
         <Infobox
           infoBoxShown={this.state.infoBoxShown}
