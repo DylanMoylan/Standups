@@ -31,6 +31,8 @@ app.use(express.static('public'))
 /*=====SOCKET.IO CODE=======*/
 //=========================//
 const rooms = {}
+const colors = ['green','blue','yellow','orange','purple','mediumturquoise','darkorchid']
+const connectedUsers = []
 const authHelpers = require('./services/auth/auth-helpers')
 
 function instantiateUser(token) {
@@ -54,27 +56,59 @@ const http = require('http').Server(app)
 var io = require('socket.io')(http);
 io.on('connection', function(client){
   console.log('a user connected', client.id);
+  let newColor = colors.pop()
+  connectedUsers.push({id: client.id, color: newColor})
 
   client.on('setGraph', (data) => {
-    const index = rooms[data.token].findIndex(item => item.id === client.id);
-    rooms[data.token][index] = data;
-    rooms[data.token][index].id = client.id
-    emitUsers(data.token)
+    const index = connectedUsers.findIndex(item => item.id===client.id)
+    connectedUsers[index] = { ...connectedUsers[index], ...data, id: client.id, }
+    // const index = rooms[data.token].findIndex(item => item.id === client.id);
+    // rooms[data.token][index] = data;
+    // rooms[data.token][index].id = client.id
+    // emitUsers(data.token)
+    let thisRoom = connectedUsers.filter((el) => {
+      return el.token === data.token
+    })
+    thisRoom.forEach((el) => {
+      io.to(el.id).emit('socket-users', thisRoom)
+    })
+    // connectedUsers.forEach((el) => {
+    //   if(el.token === data.token){
+    //     io.to(el.id).emit('socket-users', )
+    //   }
+    // })
   })
 
   client.on('giveToken', (data) => {
-    console.log(data)
-      data.id = client.id
-      if(instantiateUser(data.token)){
-        rooms[data.token].push(data)
+    // console.log(data)
+    //   data.id = client.id
+    //   if(instantiateUser(data.token)){
+    //     rooms[data.token].push(data)
+    //   }else{
+    //     rooms[data.token] = [data]
+    //   }
+    //   emitUsers(data.token)
+      const index = connectedUsers.findIndex(item => item.id === client.id)
+      if(connectedUsers[index]){
+        connectedUsers[index] = { ...connectedUsers[index], ...data}
       }else{
-        rooms[data.token] = [data]
+        data.id = client.id
+        connectedUsers.push(data)
       }
-      emitUsers(data.token)
+      let thisRoom = connectedUsers.filter((el) => {
+        return el.token === data.token
+      })
+      thisRoom.forEach((el) => {
+        io.to(el.id).emit('socket-users', thisRoom)
+      })
     })
 
     client.on('disconnect', () => {
-      console.log('a client disconnected')
+      console.log('a client disconnected', client.id)
+      console.log('connectedUsers - before:', connectedUsers)
+      let index = connectedUsers.findIndex(item => item.id === client.id)
+      connectedUsers.splice(index, 1)
+      console.log('connectedUsers', connectedUsers)
     })
   })
 
