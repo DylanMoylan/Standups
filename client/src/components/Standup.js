@@ -25,7 +25,8 @@ class Standup extends React.Component {
       xoffset: 0,
       yoffset: 0,
       infoBoxShown: false,
-      connectedUsers: []
+      connectedUsers: [],
+      displayStandup: {}
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -90,9 +91,13 @@ class Standup extends React.Component {
         }
       })
       if(id) {
-        let findSelectedStandup = this.props.standupHistory.find((el) => el.id === id)
+        let findSelectedStandup = this.state.connectedUsers.find((el) => el.id === id)
         this.setState({
-          currentStandup: findSelectedStandup
+          displayStandup: findSelectedStandup
+        })
+      }else{
+        this.setState({
+          displayStandup: this.state.currentStandup
         })
       }
     }else{
@@ -178,10 +183,12 @@ class Standup extends React.Component {
           dailySet={this.state.dailySet}
           editable={true}
           showInfoBox={this.showInfoBox}
+          connectedUsers={this.state.connectedUsers}
+          name={this.state.currentStandup.name}
         />
         <Infobox
           infoBoxShown={this.state.infoBoxShown}
-          currentStandup={this.state.currentStandup}
+          currentStandup={this.state.displayStandup}
         />
         <StandupForm
           handleSubmit={this.handleSubmit}
@@ -190,6 +197,7 @@ class Standup extends React.Component {
           visible={this.state.visible}
           showForm={this.showForm}
           emitGraph={this.emitGraph}
+          dailySet={this.state.dailySet}
         />
       </div>
     )

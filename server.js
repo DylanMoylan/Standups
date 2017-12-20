@@ -37,6 +37,7 @@ function instantiateUser(token) {
   return Object.keys(rooms).find(el => el === token)
 }
 function emitUsers(token) {
+  console.log('emitting:', rooms[token])
   rooms[token].forEach((el) => {
     io.to(el.id).emit('socket-users', rooms[token])
   })
@@ -53,16 +54,14 @@ const http = require('http').Server(app)
 var io = require('socket.io')(http);
 io.on('connection', function(client){
   console.log('a user connected', client.id);
+
   client.on('setGraph', (data) => {
-    console.log('setgraph data',data)
-    console.log('rooms setgraph:',rooms, client.id)
-    let activeClient = rooms[data.token].find(el => el.id === client.id)
-    activeClient.x = data.graph_position.x
-    activeClient.y = data.graph_position.y
-    activeClient.positives = data.positives
-    activeClient.negatives = data.negatives
+    const index = rooms[data.token].findIndex(item => item.id === client.id);
+    rooms[data.token][index] = data;
+    rooms[data.token][index].id = client.id
     emitUsers(data.token)
   })
+
   client.on('giveToken', (data) => {
     console.log(data)
       data.id = client.id
@@ -76,15 +75,6 @@ io.on('connection', function(client){
 
     client.on('disconnect', () => {
       console.log('a client disconnected')
-      // let findClient
-      // for(item in rooms) {
-      //   let foundClient = rooms[item].forEach(function(el, index) {
-      //     if(el.id === client.id){
-      //       findClient = index
-      //     }
-      //   })
-      //   rooms[item].splice(findClient, 1)
-      // }
     })
   })
 

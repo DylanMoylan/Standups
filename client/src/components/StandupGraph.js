@@ -51,6 +51,27 @@ function StandupGraph(props) {
         }}
       />
     }
+    {
+      props.connectedUsers ?
+        props.connectedUsers.map((el) => {
+          if(el.name !== props.name) {
+            return <circle
+                      key={el.id}
+                      cx={el.graph_position.x}
+                      cy={el.graph_position.y}
+                      r="5"
+                      fill="blue"
+                      className="circle hoverable"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        props.showInfoBox(e, true, el.id)
+                      }}
+                    />
+          }
+        })
+      :
+        ''
+    }
     <path d="M1 160 C 90 30, 130 20, 190 160 S 300 300, 369 160" stroke="black" fill="transparent"/>
     </svg>
   )

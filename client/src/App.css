@@ -181,6 +181,13 @@ label {
 
 .info-box {
   position: absolute;
+  background-color: rgb(208, 208, 208);
+  padding: 10px;
+  text-align: left;
+  color:grey;
+  border: 1px solid grey;
+  font-size:small;
+  line-height: 15px;
 }
 
 .standupForm {
@@ -213,4 +220,20 @@ textarea {
 
 .hidden {
   visibility: hidden;
+}
+
+.users-connected {
+  border: 1px solid black;
+  padding: 15px;
+  margin-right: 10px;
+  font-size: small;
+}
+
+.users-connected li {
+  background-color: grey;
+  color: white;
+  padding: 5px;
+  border-radius: 3px;
+  margin-bottom: 5px;
+  cursor: pointer;
 }

@@ -9,7 +9,7 @@ function Infobox(props) {
         top: props.infoBoxShown ? props.infoBoxShown.top : 0
       }}
     >
-      <div><span>{props.currentStandup.email}</span><span>{props.currentStandup.time_created}</span></div>
+      <div><span>{props.currentStandup.name}</span></div>
       <div>Wins: {props.currentStandup.positives}</div>
       <div>Losses: {props.currentStandup.negatives}</div>
     </div>
