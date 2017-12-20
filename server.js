@@ -32,6 +32,16 @@ app.use(express.static('public'))
 //=========================//
 const rooms = {}
 const authHelpers = require('./services/auth/auth-helpers')
+
+function instantiateUser(token) {
+  return Object.keys(rooms).find(el => el === token)
+}
+function emitUsers(token) {
+  rooms[token].forEach((el) => {
+    io.to(el.id).emit('socket-users', rooms[token])
+  })
+}
+
 app.get('/genurl', authHelpers.genUrl, (req, res) => {
   rooms[res.locals.newRoom] = []
   res.json({
@@ -41,28 +51,40 @@ app.get('/genurl', authHelpers.genUrl, (req, res) => {
 })
 const http = require('http').Server(app)
 var io = require('socket.io')(http);
-const connectedUsers = {}
 io.on('connection', function(client){
-  console.log('a user connected');
+  console.log('a user connected', client.id);
+  client.on('setGraph', (data) => {
+    console.log('setgraph data',data)
+    console.log('rooms setgraph:',rooms, client.id)
+    let activeClient = rooms[data.token].find(el => el.id === client.id)
+    activeClient.x = data.graph_position.x
+    activeClient.y = data.graph_position.y
+    activeClient.positives = data.positives
+    activeClient.negatives = data.negatives
+    emitUsers(data.token)
+  })
   client.on('giveToken', (data) => {
     console.log(data)
-    let instantiateUser = Object.keys(rooms).find(el => el === data.token)
-      if(instantiateUser){
-        rooms[data.token].push({
-          id: client.id
-        })
+      data.id = client.id
+      if(instantiateUser(data.token)){
+        rooms[data.token].push(data)
       }else{
-        rooms[data.token] = [{
-          id: client.id
-        }]
+        rooms[data.token] = [data]
       }
-      rooms[data.token].forEach((el) => {
-        io.to(el.id).emit('socket-users', rooms[data.token])
-      })
+      emitUsers(data.token)
     })
+
     client.on('disconnect', () => {
       console.log('a client disconnected')
-      delete connectedUsers[client.id]
+      // let findClient
+      // for(item in rooms) {
+      //   let foundClient = rooms[item].forEach(function(el, index) {
+      //     if(el.id === client.id){
+      //       findClient = index
+      //     }
+      //   })
+      //   rooms[item].splice(findClient, 1)
+      // }
     })
   })
 

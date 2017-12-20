@@ -2,10 +2,13 @@ import React from 'react'
 import StandupForm from './StandupForm'
 import StandupGraph from './StandupGraph'
 import Infobox from './Infobox'
+import UsersConnected from './UsersConnected'
+import openSocket from 'socket.io-client'
+const socket = openSocket('http://localhost:3002')
 
 class Standup extends React.Component {
-  constructor(){
-    super()
+  constructor(props){
+    super(props)
     this.state = {
       currentStandup: {
         graph_position: {
@@ -14,24 +17,39 @@ class Standup extends React.Component {
         },
         positives: '',
         negatives: '',
-        visible: false,
-        dailySet: false
+        token: (this.props.token ? this.props.token : null),
+        name: ''
       },
+      visible: false,
+      dailySet: false,
       xoffset: 0,
       yoffset: 0,
       infoBoxShown: false,
+      connectedUsers: []
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.showForm = this.showForm.bind(this)
     this.setCirclePosition = this.setCirclePosition.bind(this)
     this.showInfoBox = this.showInfoBox.bind(this)
+    this.emitGraph = this.emitGraph.bind(this)
   }
 
   componentDidMount() {
-    if(!this.props.apiDataLoaded){
-      this.fetchDaily()
-    }
+    let n = window.prompt('Name:')
+    this.setState((prevState, props) => {
+      return {
+        currentStandup: Object.assign({}, prevState.currentStandup, {['name']: n})
+      }
+    })
+    socket.emit('giveToken', this.state.currentStandup)
+    // socket.emit('setGraph', this.state.currentStandup)
+    socket.on('socket-users', (users) => {
+      console.log(users)
+      this.setState({
+        connectedUsers: users
+      })
+    })
   }
 
   fetchDaily() {
@@ -106,6 +124,14 @@ class Standup extends React.Component {
       }
     })
   }
+  emitGraph(e) {
+    e.preventDefault()
+    socket.emit('setGraph',this.state.currentStandup)
+    this.setState({
+      dailySet: true,
+      visible: true
+    })
+  }
 
   handleSubmit(e) {
     e.preventDefault()
@@ -128,6 +154,7 @@ class Standup extends React.Component {
 
   showForm(event) {
     event.preventDefault()
+    event.stopPropagation()
     this.setState({
       visible: !this.state.visible
     })
@@ -136,6 +163,9 @@ class Standup extends React.Component {
   render() {
     return (
       <div className="standup">
+        <UsersConnected
+          connectedUsers={this.state.connectedUsers}
+        />
         <StandupGraph
           standupHistory={this.props.standupHistory}
           apiDataLoaded={this.props.apiDataLoaded}
@@ -159,6 +189,7 @@ class Standup extends React.Component {
           currentStandup={this.state.currentStandup}
           visible={this.state.visible}
           showForm={this.showForm}
+          emitGraph={this.emitGraph}
         />
       </div>
     )

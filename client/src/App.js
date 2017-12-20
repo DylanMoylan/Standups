@@ -9,8 +9,6 @@ import Header from './components/Header'
 import Splash from './components/Splash'
 import Dashboard from './components/Dashboard'
 import Standup from './components/Standup'
-import openSocket from 'socket.io-client'
-const socket = openSocket('http://localhost:3002')
 
 class App extends Component {
   constructor() {
@@ -34,17 +32,10 @@ class App extends Component {
   componentDidMount() {
     if(document.location.search.length > 0){
       let token = this.getParameterByName('sockettoken')
-      console.log(typeof(token))
       this.setState({
         token: token
       })
-      socket.emit('giveToken', {
-        token: token
-      })
     }
-    socket.on('socket-users', (users) => {
-      console.log(users)
-    })
   }
 
   handleLoginSubmit(e, data) {
@@ -137,6 +128,8 @@ class App extends Component {
         <Header logout={this.logout} />
         <Route exact path="/" render={(props) => {
           return (
+            this.state.token ?
+            <Redirect push to="/Standup" /> :
             this.state.auth ?
             <Redirect push to="/Dashboard" />
             : <Splash
@@ -162,8 +155,10 @@ class App extends Component {
         />
         <Route exact path="/Standup" render={(props) => {
           return (
-            this.state.auth ?
-            <Standup />
+            this.state.auth || this.state.token ?
+            <Standup
+              token={this.state.token}
+            />
             : <Redirect push to="/" />
           )
           }}
