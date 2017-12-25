@@ -71,7 +71,10 @@ class App extends Component {
       },
       credentials: 'include',
       body: JSON.stringify(data)
-    }).then(res => res.json())
+    }).then(res => {
+        console.log(res.status)
+        return res.json()
+      })
       .then(res => {
         if(res.auth){
           this.setState({

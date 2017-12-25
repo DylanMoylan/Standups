@@ -79,7 +79,7 @@ io.on('connection', function(client){
     // })
   })
 
-  client.on('giveToken', (data) => {
+    client.on('giveToken', (data) => {
     // console.log(data)
     //   data.id = client.id
     //   if(instantiateUser(data.token)){
@@ -103,6 +103,16 @@ io.on('connection', function(client){
       })
     })
 
+    client.on('end-session', (data) => {
+      if(data.user){
+        let thisRoom = connectedUsers.filter((el) => {
+          return (el.token === data.token)
+        })
+        thisRoom.forEach((el) => {
+          io.to(el.id).emit('session-ended','test')
+        })
+      }
+    })
     client.on('disconnect', () => {
       console.log('a client disconnected', client.id)
       console.log('connectedUsers - before:', connectedUsers)

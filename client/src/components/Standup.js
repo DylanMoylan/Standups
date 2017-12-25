@@ -26,7 +26,8 @@ class Standup extends React.Component {
       yoffset: 0,
       infoBoxShown: false,
       connectedUsers: [],
-      displayStandup: {}
+      displayStandup: {},
+      sessionOpen: true
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -34,6 +35,7 @@ class Standup extends React.Component {
     this.setCirclePosition = this.setCirclePosition.bind(this)
     this.showInfoBox = this.showInfoBox.bind(this)
     this.emitGraph = this.emitGraph.bind(this)
+    this.logSession = this.logSession.bind(this)
   }
 
   componentDidMount() {
@@ -45,6 +47,38 @@ class Standup extends React.Component {
         connectedUsers: users
       })
     })
+    socket.on('session-ended', (message) => {
+      console.log(message)
+      if(!this.props.user){
+        this.setState({
+          sessionOpen: false
+        })
+      }
+    })
+  }
+
+  logSession() {
+    console.log('firing logsession')
+    if(window.confirm('End this session, disconnecting all other users and saving this as your daily Standup?')){
+    //   fetch(`/api/standup/`, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     },
+    //     credentials: 'include',
+    //     body: JSON.stringify(this.state.connectedUsers)
+    //   })
+    //   .then(res => {
+    //     if(res.status === 200){
+          socket.emit('end-session', {
+            user: this.props.user,
+            token: this.state.currentStandup.token
+          })
+    //     }else{
+    //       console.log(res)
+    //     }
+    //   })
+    }
   }
 
   fetchDaily() {
@@ -172,22 +206,27 @@ class Standup extends React.Component {
           showInfoBox={this.showInfoBox}
           infoBoxShown={this.state.infoBoxShown}
         />
-        <StandupGraph
-          currentStandup={this.state.currentStandup}
-          standupHistory={this.props.standupHistory}
-          apiDataLoaded={this.props.apiDataLoaded}
-          showForm={this.showForm}
-          setCirclePosition={this.setCirclePosition}
-          visible={this.state.visible}
-          xoffset={this.state.xoffset}
-          yoffset={this.state.yoffset}
-          dailySet={this.state.dailySet}
-          editable={true}
-          showInfoBox={this.showInfoBox}
-          infoBoxShown={this.state.infoBoxShown}
-          connectedUsers={this.state.connectedUsers}
-          name={this.state.currentStandup.name}
-        />
+        {
+          this.state.sessionOpen ?
+          <StandupGraph
+            currentStandup={this.state.currentStandup}
+            standupHistory={this.props.standupHistory}
+            apiDataLoaded={this.props.apiDataLoaded}
+            showForm={this.showForm}
+            setCirclePosition={this.setCirclePosition}
+            visible={this.state.visible}
+            xoffset={this.state.xoffset}
+            yoffset={this.state.yoffset}
+            dailySet={this.state.dailySet}
+            editable={true}
+            showInfoBox={this.showInfoBox}
+            infoBoxShown={this.state.infoBoxShown}
+            connectedUsers={this.state.connectedUsers}
+            name={this.state.currentStandup.name}
+          />
+          :
+          <div className="session-ended">The session leader has concluded this session. Your submission has been recorded.</div>
+        }
         <Infobox
           infoBoxShown={this.state.infoBoxShown}
           currentStandup={this.state.displayStandup}
@@ -201,6 +240,9 @@ class Standup extends React.Component {
           emitGraph={this.emitGraph}
           dailySet={this.state.dailySet}
         />
+        {
+          this.props.user ? <input type="button" value="end this session" onClick={this.logSession} /> : ''
+        }
       </div>
     )
   }
