@@ -15,6 +15,19 @@ StandupController.index = (req, res, next) => {
   }).catch(next)
 }
 
+StandupController.findByDate = (req, res, next) => {
+  // console.log(req.params.date)
+  let date = `%${req.params.date}%`
+  console.log(date)
+  Standup.findByDate(date, req.user.id)
+  .then(data => {
+    res.json({
+      message: 'ok',
+      data
+    })
+  }).catch(next)
+}
+
 StandupController.showAllGroup = (req, res, next) => {
   Standup.showAllGroup(req.user.id)
     .then(data => {
@@ -25,20 +38,16 @@ StandupController.showAllGroup = (req, res, next) => {
     }).catch(next)
 }
 
-// StandupController.create = (req, res, next) => {
-//   Standup.create({
-//     graph_position: req.body.graph_position,
-//     positives: req.body.positives,
-//     negatives: req.body.negatives,
-//     name: req.body.name
-//   },req.user.id)
-//   .then(data => {
-//     res.json({
-//       message: 'ok',
-//       data
-//     })
-//   }).catch(next)
-// }
+StandupController.datesList = (req, res, next) => {
+  console.log('firing dateslist')
+  Standup.datesList(req.user.id)
+    .then(data => {
+      res.json({
+        message: 'ok dates',
+        data
+      })
+    }).catch(next)
+}
 
 StandupController.create = (req, res, next) => {
   let standups = req.body.map((el) => {
@@ -55,6 +64,7 @@ StandupController.create = (req, res, next) => {
 }
 
 StandupController.daily = (req, res, next) => {
+    console.log('firing daily')
   let x = new Date(Date.now())
   let currentDate = `%${x.getFullYear()}-${x.getMonth()+1}-${x.getDate()}%`
   Standup.daily(req.user.id, currentDate)

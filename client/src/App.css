@@ -250,6 +250,7 @@ h3 {
   display: inline-block;
   margin-left: 5px;
   border-radius: 100%;
+  float: right;
 }
 
 textarea:disabled {

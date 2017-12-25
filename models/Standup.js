@@ -19,6 +19,13 @@ Standup.showAllGroup = (id) => {
   `, [id])
 }
 
+Standup.datesList = (id) => {
+  return db.query(`
+    SELECT DISTINCT
+    time_created::date from standups;
+  `, [id])
+}
+
 Standup.create = (standup, id) => {
   return db.one(`
     INSERT INTO standups
@@ -47,6 +54,14 @@ Standup.createSeveral = (standups, id) => {
     })
     return t.batch(queries)
   })
+}
+
+Standup.findByDate = (date, id) => {
+  return db.query(`
+    SELECT * from standups
+    WHERE group_id = $2
+    AND time_created::text LIKE $1
+  `, [date, id])
 }
 
 module.exports = Standup

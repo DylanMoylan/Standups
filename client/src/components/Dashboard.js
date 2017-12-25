@@ -30,16 +30,14 @@ class Dashboard extends React.Component {
   render () {
     return (
       <div className="dashboard">
-        { this.props.tokenUrl || this.state.standupHistory.length > 0 ?
-            <Standup
-              token={this.props.token}
-              user={this.props.user}
-              tokenUrl={this.props.tokenUrl}
-              standupHistory={this.state.standupHistory}
-              apiDataLoaded={this.state.apiDataLoaded}
-            />
-          : <div className="new-room-btn" onClick={(e) => {this.props.getRoomToken()}}>Create a New Room</div>
-        }
+        <Standup
+          token={this.props.token}
+          user={this.props.user}
+          tokenUrl={this.props.tokenUrl}
+          standupHistory={this.state.standupHistory}
+          apiDataLoaded={this.state.apiDataLoaded}
+          getRoomToken={this.props.getRoomToken}
+        />
       </div>
     )
   }

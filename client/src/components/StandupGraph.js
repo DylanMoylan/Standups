@@ -13,8 +13,7 @@ function StandupGraph(props) {
     <svg
       className="standup-graph"
       onClick={(e) => {
-        props.showInfoBox(e, false)
-        if(!props.dailySet){
+        if(!props.dailySet && !props.apiDataLoaded){
           props.showForm(e)
         }
       }}
@@ -37,7 +36,7 @@ function StandupGraph(props) {
             fill={el.color}
             className={`circle circle-${el.id}`}
             onClick={(e) => {
-              props.showInfoBox(e, !props.infoBoxShown, el.id)
+              props.showInfoBox(e, el.id)
             }}
           />
         )
@@ -52,7 +51,7 @@ function StandupGraph(props) {
         className={props.dailySet ? `circle hoverable circle-${props.currentStandup.id}` : `circle circle-${props.currentStandup.id}`}
         onClick={(e) => {
           if(props.dailySet){
-            props.showInfoBox(e, !props.infoBoxShown, props.currentStandup.id)
+            props.showInfoBox(e, props.currentStandup.id)
           }
         }}
       />
@@ -71,7 +70,7 @@ function StandupGraph(props) {
                       fill="transparent"
                       className="circle-container"
                       onClick={(e) => {
-                        props.showInfoBox(e, !props.infoBoxShown, el.id)
+                        props.showInfoBox(e, el.id)
                       }}
                     />
                     <circle
