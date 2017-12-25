@@ -17,12 +17,16 @@ class App extends Component {
       auth: false,
       user: null,
       apiError: null,
-      token: null
+      token: null,
+      tokenUrl: null,
+      userName: null
     }
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this)
     this.handleRegisterSubmit = this.handleRegisterSubmit.bind(this)
     this.logout = this.logout.bind(this)
     this.deleteAccount = this.deleteAccount.bind(this)
+    this.getRoomToken = this.getRoomToken.bind(this)
+
   }
   getParameterByName(name) {
     var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
@@ -32,8 +36,25 @@ class App extends Component {
   componentDidMount() {
     if(document.location.search.length > 0){
       let token = this.getParameterByName('sockettoken')
-      this.setState({
-        token: token
+      if(token){
+        let n = window.prompt('Name:')
+        this.setState({
+          token: token,
+          userName: n
+        })
+      }
+    }
+  }
+
+  getRoomToken() {
+    if(!this.state.tokenUrl) {
+      fetch('/genurl')
+      .then(res => res.json())
+      .then(res => {
+        this.setState({
+          tokenUrl: `${document.location.host}?sockettoken=${encodeURIComponent(res.token)}`,
+          token: res.token
+        })
       })
     }
   }
@@ -148,6 +169,9 @@ class App extends Component {
             <Dashboard
               user={this.state.user}
               apiError={this.state.apiError}
+              getRoomToken={this.getRoomToken}
+              token={this.state.token}
+              tokenUrl={this.state.tokenUrl}
             />
             : <Redirect push to="/" />
           )
@@ -158,6 +182,7 @@ class App extends Component {
             this.state.auth || this.state.token ?
             <Standup
               token={this.state.token}
+              userName={this.state.userName}
             />
             : <Redirect push to="/" />
           )

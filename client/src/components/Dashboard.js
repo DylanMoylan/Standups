@@ -6,10 +6,9 @@ class Dashboard extends React.Component {
     super()
     this.state = {
       standupHistory: {},
-      apiDataLoaded: false,
-      tokenUrl: null
+      apiDataLoaded: false
     }
-    this.getRoomToken = this.getRoomToken.bind(this)
+    this.focusTextInput = this.focusTextInput.bind(this)
   }
 
   componentDidMount() {
@@ -25,26 +24,30 @@ class Dashboard extends React.Component {
     }).catch(err => console.log(err))
   }
 
-  getRoomToken() {
-    if(!this.state.tokenUrl) {
-      fetch('/genurl')
-      .then(res => res.json())
-      .then(res => {
-        this.setState({
-          tokenUrl: `${document.location.host}?sockettoken=${encodeURIComponent(res.token)}`
-        })
-      })
-    }
+  focusTextInput() {
+    console.log('firing focusTextInput')
+    this.textInput.focus()
+    this.textInput.select()
+    document.execCommand('copy')
   }
 
   render () {
     return (
       <div className="dashboard">
-        <div className="new-room-btn" onClick={(e) => {this.getRoomToken()}}>{this.state.tokenUrl ? 'Room active - Share url:'+this.state.tokenUrl : 'Create a New Room'}</div>
-        <Standup
-          standupHistory={this.state.standupHistory}
-          apiDataLoaded={this.state.apiDataLoaded}
-        />
+        { this.props.tokenUrl ?
+            <div>
+            <Standup
+              token={this.props.token}
+              user={this.props.user}
+            />
+                <div>
+                  Room active - Share url:
+                  <input ref={(input) => {this.textInput = input}} className="url-value" type="text" value={this.props.tokenUrl} readOnly />
+                  <button onClick={this.focusTextInput}>Copy to Clipboard</button>
+                </div>
+              </div>
+          : <div className="new-room-btn" onClick={(e) => {this.props.getRoomToken()}}>Create a New Room</div>
+        }
       </div>
     )
   }

@@ -18,7 +18,7 @@ class Standup extends React.Component {
         positives: '',
         negatives: '',
         token: (this.props.token ? this.props.token : null),
-        name: ''
+        name: (this.props.userName ? this.props.userName : this.props.user ? this.props.user.email : '')
       },
       visible: false,
       dailySet: false,
@@ -37,12 +37,6 @@ class Standup extends React.Component {
   }
 
   componentDidMount() {
-    let n = window.prompt('Name:')
-    this.setState((prevState, props) => {
-      return {
-        currentStandup: Object.assign({}, prevState.currentStandup, {['name']: n})
-      }
-    })
     socket.emit('giveToken', this.state.currentStandup)
     // socket.emit('setGraph', this.state.currentStandup)
     socket.on('socket-users', (users) => {
@@ -85,13 +79,16 @@ class Standup extends React.Component {
     if(toggle){
       // let x = event.nativeEvent.clientX;
       // let y = event.nativeEvent.clientY;
-      let bound = document.querySelector(`.circle-${id}`).getBoundingClientRect()
-      this.setState({
-        infoBoxShown: {
-          left: bound.x + bound.width,
-          top: bound.y + bound.height
-        }
-      })
+      let bound = document.querySelector(`.circle-${id}`)
+      if(bound){
+        bound = bound.getBoundingClientRect()
+        this.setState({
+          infoBoxShown: {
+            left: bound.x + bound.width,
+            top: bound.y + bound.height
+          }
+        })
+      }
       if(id) {
         let findSelectedStandup = this.state.connectedUsers.find((el) => el.id === id)
         this.setState({
@@ -189,6 +186,7 @@ class Standup extends React.Component {
           showInfoBox={this.showInfoBox}
           infoBoxShown={this.state.infoBoxShown}
           connectedUsers={this.state.connectedUsers}
+          name={this.state.currentStandup.name}
         />
         <Infobox
           infoBoxShown={this.state.infoBoxShown}

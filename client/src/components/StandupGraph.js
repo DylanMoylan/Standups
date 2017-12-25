@@ -2,6 +2,13 @@ import React from 'react'
 //<line x1={props.xoffset ? props.xoffset : "0"} y1="0" x2={props.xoffset ? props.xoffset : "0"} y2="300" strokeWidth="1" stroke="yellow"/>
 // <line x1="0" y1={props.yoffset ? props.yoffset : "0"} x2="300" y2={props.yoffset ? props.yoffset : "300"} strokeWidth="1" stroke="yellow" />
 function StandupGraph(props) {
+  let color = ''
+  if(props.connectedUsers && props.currentStandup){
+    let findColor = props.connectedUsers.find(el => el.name === props.currentStandup.name)
+    if(findColor){
+      color = findColor.color
+    }
+  }
   return (
     <svg
       className="standup-graph"
@@ -41,7 +48,7 @@ function StandupGraph(props) {
         cx={props.currentStandup.graph_position.x}
         cy={props.currentStandup.graph_position.y}
         r="5"
-        fill="red"
+        fill={color}
         className={props.dailySet ? `circle hoverable circle-${props.currentStandup.id}` : `circle circle-${props.currentStandup.id}`}
         onClick={(e) => {
           if(props.dailySet){
@@ -54,9 +61,9 @@ function StandupGraph(props) {
     {
       props.connectedUsers ?
         props.connectedUsers.map((el) => {
-          if(el.name !== props.name && el.graph_position) {
+          if(el.name !== props.name && el.graph_position || el.name === props.name && props.dailySet) {
             return (
-                    <g>
+                    <g key={el.id}>
                     <circle
                       cx={el.graph_position.x}
                       cy={el.graph_position.y}
@@ -68,7 +75,6 @@ function StandupGraph(props) {
                       }}
                     />
                     <circle
-                      key={el.id}
                       cx={el.graph_position.x}
                       cy={el.graph_position.y}
                       r="5"
