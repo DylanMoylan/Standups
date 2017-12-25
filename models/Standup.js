@@ -36,4 +36,18 @@ Standup.daily = (id, name, time) => {
     AND time_created::text LIKE $2`, [id, name, time])
 }
 
+Standup.createSeveral = (standups, id) => {
+  return db.tx(t => {
+    const queries = standups.map(standup => {
+      return t.one(`
+        INSERT INTO standups
+        (graph_position, positives, negatives, time_created, group_id, name)
+        VALUES($1, $2, $3, current_timestamp, $4, $5)
+        RETURNING *
+      `,[standup.graph_position, standup.positives, standup.negatives, id, standup.name])
+    })
+    return t.batch(queries)
+  })
+}
+
 module.exports = Standup

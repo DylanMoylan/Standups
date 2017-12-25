@@ -8,7 +8,6 @@ class Dashboard extends React.Component {
       standupHistory: {},
       apiDataLoaded: false
     }
-    this.focusTextInput = this.focusTextInput.bind(this)
   }
 
   componentDidMount() {
@@ -24,28 +23,15 @@ class Dashboard extends React.Component {
     }).catch(err => console.log(err))
   }
 
-  focusTextInput() {
-    console.log('firing focusTextInput')
-    this.textInput.focus()
-    this.textInput.select()
-    document.execCommand('copy')
-  }
-
   render () {
     return (
       <div className="dashboard">
         { this.props.tokenUrl ?
-            <div>
             <Standup
               token={this.props.token}
               user={this.props.user}
+              tokenUrl={this.props.tokenUrl}
             />
-                <div>
-                  Room active - Share url:
-                  <input ref={(input) => {this.textInput = input}} className="url-value" type="text" value={this.props.tokenUrl} readOnly />
-                  <button onClick={this.focusTextInput}>Copy to Clipboard</button>
-                </div>
-              </div>
           : <div className="new-room-btn" onClick={(e) => {this.props.getRoomToken()}}>Create a New Room</div>
         }
       </div>

@@ -255,3 +255,11 @@ h3 {
 textarea:disabled {
   background-color: #e6e6e6;
 }
+
+.room-inactive {
+  color: red;
+}
+
+.room-active {
+  color: #58da80;
+}

@@ -18,7 +18,7 @@ class Standup extends React.Component {
         positives: '',
         negatives: '',
         token: (this.props.token ? this.props.token : null),
-        name: (this.props.userName ? this.props.userName : this.props.user ? this.props.user.email : '')
+        name: (this.props.userName ? this.props.userName : this.props.user ? this.props.user.name : '')
       },
       visible: false,
       dailySet: false,
@@ -36,6 +36,7 @@ class Standup extends React.Component {
     this.showInfoBox = this.showInfoBox.bind(this)
     this.emitGraph = this.emitGraph.bind(this)
     this.logSession = this.logSession.bind(this)
+    this.focusTextInput = this.focusTextInput.bind(this)
   }
 
   componentDidMount() {
@@ -49,35 +50,34 @@ class Standup extends React.Component {
     })
     socket.on('session-ended', (message) => {
       console.log(message)
-      if(!this.props.user){
-        this.setState({
-          sessionOpen: false
-        })
-      }
+      this.setState({
+        sessionOpen: false,
+        dailySet: true
+      })
     })
   }
 
   logSession() {
     console.log('firing logsession')
     if(window.confirm('End this session, disconnecting all other users and saving this as your daily Standup?')){
-    //   fetch(`/api/standup/`, {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     },
-    //     credentials: 'include',
-    //     body: JSON.stringify(this.state.connectedUsers)
-    //   })
-    //   .then(res => {
-    //     if(res.status === 200){
+      fetch(`/api/standup/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(this.state.connectedUsers)
+      })
+      .then(res => {
+        if(res.status === 200){
           socket.emit('end-session', {
             user: this.props.user,
             token: this.state.currentStandup.token
           })
-    //     }else{
-    //       console.log(res)
-    //     }
-    //   })
+        }else{
+          console.log(res)
+        }
+      })
     }
   }
 
@@ -153,6 +153,13 @@ class Standup extends React.Component {
     }
   }
 
+  focusTextInput() {
+    console.log('firing focusTextInput')
+    this.textInput.focus()
+    this.textInput.select()
+    document.execCommand('copy')
+  }
+
   handleInputChange(e) {
     const name = e.target.name
     const value = e.target.value
@@ -207,23 +214,38 @@ class Standup extends React.Component {
           infoBoxShown={this.state.infoBoxShown}
         />
         {
-          this.state.sessionOpen ?
-          <StandupGraph
-            currentStandup={this.state.currentStandup}
-            standupHistory={this.props.standupHistory}
-            apiDataLoaded={this.props.apiDataLoaded}
-            showForm={this.showForm}
-            setCirclePosition={this.setCirclePosition}
-            visible={this.state.visible}
-            xoffset={this.state.xoffset}
-            yoffset={this.state.yoffset}
-            dailySet={this.state.dailySet}
-            editable={true}
-            showInfoBox={this.showInfoBox}
-            infoBoxShown={this.state.infoBoxShown}
-            connectedUsers={this.state.connectedUsers}
-            name={this.state.currentStandup.name}
-          />
+          this.state.sessionOpen || this.props.user ?
+          <div>
+            <StandupGraph
+              currentStandup={this.state.currentStandup}
+              standupHistory={this.props.standupHistory}
+              apiDataLoaded={this.props.apiDataLoaded}
+              showForm={this.showForm}
+              setCirclePosition={this.setCirclePosition}
+              visible={this.state.visible}
+              xoffset={this.state.xoffset}
+              yoffset={this.state.yoffset}
+              dailySet={this.state.dailySet}
+              editable={true}
+              showInfoBox={this.showInfoBox}
+              infoBoxShown={this.state.infoBoxShown}
+              connectedUsers={this.state.connectedUsers}
+              name={this.state.currentStandup.name}
+            />
+            {
+              this.props.user ?
+                this.state.sessionOpen ?
+                  <div>
+                    <span className="room-active">Room active - Share url:</span>
+                    <input ref={(input) => {this.textInput = input}} className="url-value" type="text" value={this.props.tokenUrl} readOnly />
+                    <button onClick={this.focusTextInput}>Copy to Clipboard</button>
+                    <input type="button" value="end this session" onClick={this.logSession} />
+                  </div>
+                :
+                  <div className="room-inactive">Room inactive - session recorded.</div>
+              : ''
+            }
+          </div>
           :
           <div className="session-ended">The session leader has concluded this session. Your submission has been recorded.</div>
         }
@@ -240,9 +262,6 @@ class Standup extends React.Component {
           emitGraph={this.emitGraph}
           dailySet={this.state.dailySet}
         />
-        {
-          this.props.user ? <input type="button" value="end this session" onClick={this.logSession} /> : ''
-        }
       </div>
     )
   }

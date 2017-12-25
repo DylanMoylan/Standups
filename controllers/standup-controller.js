@@ -25,19 +25,33 @@ StandupController.showAllGroup = (req, res, next) => {
     }).catch(next)
 }
 
+// StandupController.create = (req, res, next) => {
+//   Standup.create({
+//     graph_position: req.body.graph_position,
+//     positives: req.body.positives,
+//     negatives: req.body.negatives,
+//     name: req.body.name
+//   },req.user.id)
+//   .then(data => {
+//     res.json({
+//       message: 'ok',
+//       data
+//     })
+//   }).catch(next)
+// }
+
 StandupController.create = (req, res, next) => {
-  Standup.create({
-    graph_position: req.body.graph_position,
-    positives: req.body.positives,
-    negatives: req.body.negatives,
-    name: req.body.name
-  },req.user.id)
-  .then(data => {
-    res.json({
-      message: 'ok',
-      data
+  let standups = req.body.map((el) => {
+    el.graph_position = `${el.graph_position.x},${el.graph_position.y}`
+    return el
+  })
+  Standup.createSeveral(standups, req.user.id)
+    .then(data => {
+      res.status(200).json({
+        message: 'ok',
+        data
+      })
     })
-  }).catch(next)
 }
 
 StandupController.daily = (req, res, next) => {
