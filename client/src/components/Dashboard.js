@@ -5,7 +5,7 @@ class Dashboard extends React.Component {
   constructor() {
     super()
     this.state = {
-      standupHistory: {},
+      standupHistory: [],
       apiDataLoaded: false
     }
   }
@@ -16,6 +16,10 @@ class Dashboard extends React.Component {
       })
     .then(res => res.json())
     .then(res => {
+      let colors = ['red','green','blue','yellow','orange','purple','black']
+      let cres = res.data.map((el) => {
+        return el.color = colors.pop()
+      })
       this.setState({
         standupHistory: res.data,
         apiDataLoaded: true
@@ -26,11 +30,13 @@ class Dashboard extends React.Component {
   render () {
     return (
       <div className="dashboard">
-        { this.props.tokenUrl ?
+        { this.props.tokenUrl || this.state.standupHistory.length > 0 ?
             <Standup
               token={this.props.token}
               user={this.props.user}
               tokenUrl={this.props.tokenUrl}
+              standupHistory={this.state.standupHistory}
+              apiDataLoaded={this.state.apiDataLoaded}
             />
           : <div className="new-room-btn" onClick={(e) => {this.props.getRoomToken()}}>Create a New Room</div>
         }

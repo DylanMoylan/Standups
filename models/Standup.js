@@ -28,12 +28,11 @@ Standup.create = (standup, id) => {
   `, [standup.graph_position, standup.positives, standup.negatives, id, standup.name])
 }
 
-Standup.daily = (id, name, time) => {
+Standup.daily = (id, time) => {
   return db.query(`
     SELECT * FROM standups
     WHERE group_id = $1
-    AND name = $2
-    AND time_created::text LIKE $2`, [id, name, time])
+    AND time_created::text LIKE $2`, [id, time])
 }
 
 Standup.createSeveral = (standups, id) => {

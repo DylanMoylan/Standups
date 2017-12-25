@@ -19,7 +19,7 @@ StandupController.showAllGroup = (req, res, next) => {
   Standup.showAllGroup(req.user.id)
     .then(data => {
       res.json({
-        message: 'ok',
+        message: 'ok group',
         data
       })
     }).catch(next)
@@ -57,11 +57,11 @@ StandupController.create = (req, res, next) => {
 StandupController.daily = (req, res, next) => {
   let x = new Date(Date.now())
   let currentDate = `%${x.getFullYear()}-${x.getMonth()+1}-${x.getDate()}%`
-  Standup.daily(req.user.id, req.params.name, currentDate)
+  Standup.daily(req.user.id, currentDate)
   .then(data => {
     console.log(data)
     res.json({
-      message: 'ok',
+      message: 'ok daily',
       data
     })
   }).catch(next)

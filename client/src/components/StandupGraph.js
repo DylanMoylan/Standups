@@ -34,10 +34,10 @@ function StandupGraph(props) {
             cx={positions[0]}
             cy={positions[1]}
             r="5"
-            fill="red"
-            className="circle hoverable"
+            fill={el.color}
+            className={`circle circle-${el.id}`}
             onClick={(e) => {
-              props.showInfoBox(e, !props.infoBoxShown, el.id, {x:positions[0],y:positions[1]})
+              props.showInfoBox(e, !props.infoBoxShown, el.id)
             }}
           />
         )

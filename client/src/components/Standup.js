@@ -27,7 +27,8 @@ class Standup extends React.Component {
       infoBoxShown: false,
       connectedUsers: [],
       displayStandup: {},
-      sessionOpen: true
+      sessionOpen: true,
+      graphType: 'live'
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -108,7 +109,7 @@ class Standup extends React.Component {
     }).catch(err => console.log(err))
   }
 
-  showInfoBox(event, toggle, id) {
+  showInfoBox(event, toggle, id, histry) {
     event.stopPropagation()
     if(toggle){
       // let x = event.nativeEvent.clientX;
@@ -124,10 +125,17 @@ class Standup extends React.Component {
         })
       }
       if(id) {
-        let findSelectedStandup = this.state.connectedUsers.find((el) => el.id === id)
-        this.setState({
-          displayStandup: findSelectedStandup
-        })
+        if(histry){
+          let findSelectedStandup = this.props.standupHistory.find((el) => el.id === id)
+          this.setState({
+            displayStandup: findSelectedStandup
+          })
+        }else{
+          let findSelectedStandup = this.state.connectedUsers.find((el) => el.id === id)
+          this.setState({
+            displayStandup: findSelectedStandup
+          })
+        }
       }else{
         this.setState({
           displayStandup: this.state.currentStandup
@@ -212,6 +220,8 @@ class Standup extends React.Component {
           connectedUsers={this.state.connectedUsers}
           showInfoBox={this.showInfoBox}
           infoBoxShown={this.state.infoBoxShown}
+          standupHistory={this.props.standupHistory}
+          apiDataLoaded={this.props.apiDataLoaded}
         />
         {
           this.state.sessionOpen || this.props.user ?
@@ -237,7 +247,7 @@ class Standup extends React.Component {
                 this.state.sessionOpen ?
                   <div>
                     <span className="room-active">Room active - Share url:</span>
-                    <input ref={(input) => {this.textInput = input}} className="url-value" type="text" value={this.props.tokenUrl} readOnly />
+                    <input ref={(input) => {this.textInput = input}} className="url-value" type="text" value={this.props.tokenUrl || ''} readOnly />
                     <button onClick={this.focusTextInput}>Copy to Clipboard</button>
                     <input type="button" value="end this session" onClick={this.logSession} />
                   </div>
