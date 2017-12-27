@@ -36,8 +36,7 @@ class Header extends React.Component {
   render() {
     return (
       <header>
-        <Link to="/"><div className="logo">Home</div></Link>
-        <div onClick={this.toggleDropdown}>Hamburger</div>
+        <div onClick={this.toggleDropdown}><i class="fa fa-bars" aria-hidden="true"></i></div>
         <Dropdown
           toggleDropdown={this.toggleDropdown}
           logout={this.props.logout}

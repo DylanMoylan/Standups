@@ -1,7 +1,7 @@
 import React from 'react'
 
 function UsersConnected(props) {
-  if(props.apiDataLoaded && !props.sessionOpen){
+  if((props.apiDataLoaded || props.standupDatesLoaded) && !props.sessionOpen && (props.standupHistory.length > 0 || props.standupDates.length > 0)){
     return (
       <div className="users-connected">
         <div>Users on
@@ -18,9 +18,9 @@ function UsersConnected(props) {
               props.standupHistory[0].time_created.match(/([0-9]{4}-[0-9]+[-][0-9]{2})/)[1]
           }</div>
         <ul>
-          {props.standupHistory.map((el) => {
+          {props.connectedUsers.map((el) => {
             return <li
-                      onClick={(e) => {props.showInfoBox(e, el.id, true)}}
+                      onClick={(e) => {props.showInfoBox(e, el.id)}}
                       key={el.id}>
                       {el.name ? el.name : 'Unknown User'}
                       <div className="user-indicator" style={{backgroundColor: el.color}}></div>

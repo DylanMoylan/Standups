@@ -23,26 +23,7 @@ function StandupGraph(props) {
         }
       }}
     >
-    {
-      props.apiDataLoaded ?
-      props.standupHistory.map((el) => {
-        let positions = el.graph_position.split(',')
-        return (
-          <circle
-            key={el.id}
-            cx={positions[0]}
-            cy={positions[1]}
-            r="5"
-            fill={el.color}
-            className={`circle circle-${el.id}`}
-            onClick={(e) => {
-              props.showInfoBox(e, el.id)
-            }}
-          />
-        )
-      })
-      :
-      (props.dailySet ? '' :
+    { props.dailySet || props.graphType !== 'live' ? '' :
         <circle
         cx={props.currentStandup.graph_position.x}
         cy={props.currentStandup.graph_position.y}
@@ -55,12 +36,11 @@ function StandupGraph(props) {
           }
         }}
       />
-      )
     }
     {
       props.connectedUsers ?
         props.connectedUsers.map((el) => {
-          if(el.name !== props.name && el.graph_position || el.name === props.name && props.dailySet) {
+          if(props.graphType === 'past-daily' || ((el.name !== props.name && el.graph_position) || (el.name === props.name && props.dailySet))) {
             return (
                     <g key={el.id}>
                     <circle

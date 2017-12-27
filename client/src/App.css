@@ -264,3 +264,20 @@ textarea:disabled {
 .room-active {
   color: #58da80;
 }
+
+.new-room-btn {
+  display: inline-block;
+  background-color: #68ca68;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.new-room-btn:hover {
+  color: white;
+}
+
+.copied {
+  color: #7cd186;
+}

@@ -21,7 +21,7 @@ class Dashboard extends React.Component {
         return el.color = colors.pop()
       })
       this.setState({
-        standupHistory: res.data,
+        standupHistory: cres,
         apiDataLoaded: true
       })
     }).catch(err => console.log(err))

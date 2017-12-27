@@ -32,10 +32,11 @@ class Standup extends React.Component {
       apiDataLoaded: this.props.apiDataLoaded,
       selectedDate: '',
       standupDates: [],
-      standupDatesLoaded: false
+      standupDatesLoaded: false,
+      copied: false,
+      invalid: false
     }
     this.handleInputChange = this.handleInputChange.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
     this.showForm = this.showForm.bind(this)
     this.setCirclePosition = this.setCirclePosition.bind(this)
     this.showInfoBox = this.showInfoBox.bind(this)
@@ -59,7 +60,8 @@ class Standup extends React.Component {
         this.setState({
           standupDates: res.data,
           standupDatesLoaded: true,
-          selectedDate: res.data.find(el => el.time_created.match(d))
+          selectedDate: res.data.find(el => el.time_created.match(d)),
+          graphType: 'past-daily'
         })
       }).catch(err => console.log(err))
     }
@@ -70,6 +72,11 @@ class Standup extends React.Component {
       console.log(users)
       this.setState({
         connectedUsers: users
+      })
+    })
+    socket.on('invalid-token', (message) => {
+      this.setState({
+        invalid: message
       })
     })
     socket.on('session-ended', (message) => {
@@ -92,7 +99,8 @@ class Standup extends React.Component {
         return {
           sessionOpen: true,
           apiDataLoaded: false,
-          currentStandup: Object.assign({}, prevState.currentStandup, {token: nextProps.token})
+          currentStandup: Object.assign({}, prevState.currentStandup, {token: nextProps.token}),
+          graphType: 'live'
         }
       })
     }
@@ -104,7 +112,8 @@ class Standup extends React.Component {
     }
     if(!prevProps.standupHistory && this.props.standupHistory && this.props.standupHistory.length > 0){
       this.setState({
-        selectedDate: this.props.standupHistory[0].time_created.match(/([0-9]{4}-[0-9]+[-][0-9]{2})/)[1]
+        selectedDate: this.props.standupHistory[0].time_created.match(/([0-9]{4}-[0-9]+[-][0-9]{2})/)[1],
+        connectedUsers: this.props.standupHistory
       })
     }
   }
@@ -117,8 +126,18 @@ class Standup extends React.Component {
       credentials: 'include'
     }).then(res => res.json())
       .then(res => {
+        let colors = ['red','green','blue','yellow','orange','purple','black']
+        let cres = res.data.map((el) => {
+          el.color = colors.pop()
+          let gp = el.graph_position.split(',')
+          el.graph_position = {
+            x: gp[0],
+            y: gp[1]
+          }
+          return el
+        })
         this.setState({
-          connectedUsers: res.data,
+          connectedUsers: cres,
           graphType: 'past-daily'
         })
       })
@@ -141,6 +160,9 @@ class Standup extends React.Component {
             user: this.props.user,
             token: this.state.currentStandup.token
           })
+          this.setState({
+            graphType: 'past-daily'
+          })
         }else{
           console.log(res)
         }
@@ -148,34 +170,7 @@ class Standup extends React.Component {
     }
   }
 
-  fetchDaily() {
-    fetch(`/api/standup/daily`, {
-      credentials: 'include'
-    })
-    .then(res => res.json())
-    .then(res => {
-      if(res.data.length > 0) {
-        let positions = res.data[0].graph_position.split(',')
-        let x = positions[0]
-        let y = positions[1]
-        this.setState({
-          currentStandup: {
-            graph_position: {
-              x: x,
-              y: y
-            },
-            positives: res.data[0].positives,
-            negatives: res.data[0].negatives,
-            email: res.data[0].email,
-            time_created: res.data[0].time_created
-          },
-          dailySet: true
-        })
-      }
-    }).catch(err => console.log(err))
-  }
-
-  showInfoBox(event, id, histry) {
+  showInfoBox(event, id) {
     event.stopPropagation()
       // let x = event.nativeEvent.clientX;
       // let y = event.nativeEvent.clientY;
@@ -190,17 +185,10 @@ class Standup extends React.Component {
         })
       }
       if(id) {
-        if(histry){
-          let findSelectedStandup = this.props.standupHistory.find((el) => el.id === id)
-          this.setState({
-            displayStandup: findSelectedStandup
-          })
-        }else{
-          let findSelectedStandup = this.state.connectedUsers.find((el) => el.id === id)
-          this.setState({
-            displayStandup: findSelectedStandup
-          })
-        }
+        let findSelectedStandup = this.state.connectedUsers.find((el) => el.id === id)
+        this.setState({
+          displayStandup: findSelectedStandup
+        })
       }else{
         this.setState({
           displayStandup: this.state.currentStandup
@@ -235,6 +223,9 @@ class Standup extends React.Component {
     this.textInput.focus()
     this.textInput.select()
     document.execCommand('copy')
+    this.setState({
+      copied: true
+    })
   }
 
   handleInputChange(e) {
@@ -256,25 +247,6 @@ class Standup extends React.Component {
     })
   }
 
-  handleSubmit(e) {
-    e.preventDefault()
-    fetch('/api/standup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include',
-      body: JSON.stringify({
-        graph_position: `${this.state.currentStandup.graph_position.x},${this.state.currentStandup.graph_position.y}`,
-        positives: this.state.currentStandup.positives,
-        negatives: this.state.currentStandup.negatives
-      })
-    })
-    .then(res => res.json())
-    .then(res => console.log(res))
-    .then(this.fetchDaily())
-  }
-
   showForm(event) {
     event.preventDefault()
     event.stopPropagation()
@@ -284,9 +256,15 @@ class Standup extends React.Component {
   }
 
   render() {
+    if(this.state.invalid){
+      return (
+        <div>Invalid Session URL. Please double check that your link was copied correctly and that the Standup is still in session.</div>
+      )
+    }else{
     return (
       <div className="standup">
         <UsersConnected
+          graphType={this.state.graphType}
           connectedUsers={this.state.connectedUsers}
           showInfoBox={this.showInfoBox}
           infoBoxShown={this.state.infoBoxShown}
@@ -301,6 +279,7 @@ class Standup extends React.Component {
           this.state.sessionOpen || this.props.user ?
           <div>
             <StandupGraph
+              graphType={this.state.graphType}
               currentStandup={this.state.currentStandup}
               standupHistory={this.props.standupHistory}
               apiDataLoaded={this.state.apiDataLoaded}
@@ -322,14 +301,14 @@ class Standup extends React.Component {
                   <div>
                     <span className="room-active">Room active - Share url:</span>
                     <input ref={(input) => {this.textInput = input}} className="url-value" type="text" value={this.props.tokenUrl || ''} readOnly />
-                    <button onClick={this.focusTextInput}>Copy to Clipboard</button>
+                    <button onClick={this.focusTextInput}>{this.state.copied ? (<span><span>Copied </span><i class="copied fa fa-check" aria-hidden="true"></i></span>) : 'Copy to Clipboard'}</button>
                     <input type="button" value="end this session" onClick={this.logSession} />
                   </div>
                 :
                   <div>
                     <div className="room-inactive">Room inactive</div>
                     <div className="new-room-btn" onClick={(e) => {
-                      if(this.state.apiDataLoaded){
+                      if(this.state.apiDataLoaded && this.state.dailySet){
                         if(window.confirm("Warning: A Standup has already been saved for today. Data saved from a new session will overwrite this existing Standup. Continue anyway?")){
                           this.props.getRoomToken()
                         }
@@ -349,7 +328,6 @@ class Standup extends React.Component {
           currentStandup={this.state.displayStandup}
         />
         <StandupForm
-          handleSubmit={this.handleSubmit}
           handleInputChange={this.handleInputChange}
           currentStandup={this.state.currentStandup}
           visible={this.state.visible}
@@ -359,6 +337,7 @@ class Standup extends React.Component {
         />
       </div>
     )
+  }
   }
 }
 

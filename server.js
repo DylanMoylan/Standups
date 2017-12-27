@@ -30,23 +30,13 @@ app.use(express.static('public'))
 
 /*=====SOCKET.IO CODE=======*/
 //=========================//
-const rooms = {}
+const rooms = []
 const colors = ['green','blue','yellow','orange','purple','mediumturquoise','darkorchid']
 const connectedUsers = []
 const authHelpers = require('./services/auth/auth-helpers')
 
-function instantiateUser(token) {
-  return Object.keys(rooms).find(el => el === token)
-}
-function emitUsers(token) {
-  console.log('emitting:', rooms[token])
-  rooms[token].forEach((el) => {
-    io.to(el.id).emit('socket-users', rooms[token])
-  })
-}
-
 app.get('/genurl', authHelpers.genUrl, (req, res) => {
-  rooms[res.locals.newRoom] = []
+  rooms.push(res.locals.newRoom)
   res.json({
     message: 'Room created',
     token: res.locals.newRoom
@@ -80,27 +70,24 @@ io.on('connection', function(client){
   })
 
     client.on('giveToken', (data) => {
-    // console.log(data)
-    //   data.id = client.id
-    //   if(instantiateUser(data.token)){
-    //     rooms[data.token].push(data)
-    //   }else{
-    //     rooms[data.token] = [data]
-    //   }
-    //   emitUsers(data.token)
-      const index = connectedUsers.findIndex(item => item.id === client.id)
-      if(connectedUsers[index]){
-        connectedUsers[index] = { ...connectedUsers[index], ...data}
+      let valid = rooms.find(el => el === data.token)
+      if(valid || !data.token){
+        const index = connectedUsers.findIndex(item => item.id === client.id)
+        if(connectedUsers[index]){
+          connectedUsers[index] = { ...connectedUsers[index], ...data}
+        }else{
+          data.id = client.id
+          connectedUsers.push(data)
+        }
+        let thisRoom = connectedUsers.filter((el) => {
+          return el.token === data.token
+        })
+        thisRoom.forEach((el) => {
+          io.to(el.id).emit('socket-users', thisRoom)
+        })
       }else{
-        data.id = client.id
-        connectedUsers.push(data)
+        client.emit('invalid-token', 'Token Invalid')
       }
-      let thisRoom = connectedUsers.filter((el) => {
-        return el.token === data.token
-      })
-      thisRoom.forEach((el) => {
-        io.to(el.id).emit('socket-users', thisRoom)
-      })
     })
 
     client.on('end-session', (data) => {
