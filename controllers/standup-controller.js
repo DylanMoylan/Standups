@@ -42,10 +42,28 @@ StandupController.datesList = (req, res, next) => {
   console.log('firing dateslist')
   Standup.datesList(req.user.id)
     .then(data => {
-      res.json({
-        message: 'ok dates',
-        data
-      })
+       res.locals.dateList = data;
+    })
+    .then(() => {
+      let x = new Date(Date.now())
+      let month = x.getMonth()+1;
+      if(month.toString().length < 2){
+        month = '0' + month
+      }
+      let date = x.getDate()
+      if(date.toString().length < 2){
+        date = '0' + date
+      }
+      let currentDate = `%${x.getFullYear()}-${month}-${date}%`
+      console.log(currentDate)
+      Standup.findByDate(currentDate, req.user.id)
+      .then(today => {
+        res.json({
+          message: 'ok dates',
+          dates: res.locals.dateList,
+          today: today
+        })
+      }).catch(next)
     }).catch(next)
 }
 
@@ -66,7 +84,15 @@ StandupController.create = (req, res, next) => {
 StandupController.daily = (req, res, next) => {
     console.log('firing daily')
   let x = new Date(Date.now())
-  let currentDate = `%${x.getFullYear()}-${x.getMonth()+1}-${x.getDate()}%`
+  let month = x.getMonth()+1;
+  if(month.length < 2){
+    month = '0' + month
+  }
+  let date = x.getDate()
+  if(date.length < 2){
+    date = '0' + date
+  }
+  let currentDate = `%${x.getFullYear()}-${month}-${date}%`
   Standup.daily(req.user.id, currentDate)
   .then(data => {
     console.log(data)

@@ -57,6 +57,12 @@ Standup.createSeveral = (standups, id) => {
 }
 
 Standup.findByDate = (date, id) => {
+  let query = `
+    SELECT * from standups
+    WHERE group_id = ${id}
+    AND time_created::text LIKE ${date}
+  `;
+  console.log(query)
   return db.query(`
     SELECT * from standups
     WHERE group_id = $2

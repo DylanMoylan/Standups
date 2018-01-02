@@ -56,12 +56,23 @@ class Standup extends React.Component {
       .then(res => {
         let d = new Date(Date.now())
         d = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`
-        console.log(res.data.find(el => el.time_created.match(d)))
+        console.log(res.dates.find(el => el.time_created.match(d)))
+        let colors = ['red','green','blue','yellow','orange','purple','black']
+        let cres = res.today.map((el) => {
+          el.color = colors.pop()
+          let gp = el.graph_position.split(',')
+          el.graph_position = {
+            x: gp[0],
+            y: gp[1]
+          }
+          return el
+        })
         this.setState({
-          standupDates: res.data,
+          standupDates: res.dates,
           standupDatesLoaded: true,
-          selectedDate: res.data.find(el => el.time_created.match(d)),
-          graphType: 'past-daily'
+          selectedDate: res.dates.find(el => el.time_created.match(d)),
+          graphType: 'past-daily',
+          connectedUsers: cres
         })
       }).catch(err => console.log(err))
     }
@@ -301,7 +312,7 @@ class Standup extends React.Component {
                   <div>
                     <span className="room-active">Room active - Share url:</span>
                     <input ref={(input) => {this.textInput = input}} className="url-value" type="text" value={this.props.tokenUrl || ''} readOnly />
-                    <button onClick={this.focusTextInput}>{this.state.copied ? (<span><span>Copied </span><i class="copied fa fa-check" aria-hidden="true"></i></span>) : 'Copy to Clipboard'}</button>
+                    <button onClick={this.focusTextInput}>{this.state.copied ? (<span><span>Copied </span><i className="copied fa fa-check" aria-hidden="true"></i></span>) : 'Copy to Clipboard'}</button>
                     <input type="button" value="end this session" onClick={this.logSession} />
                   </div>
                 :

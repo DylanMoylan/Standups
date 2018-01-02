@@ -36,7 +36,7 @@ class Header extends React.Component {
   render() {
     return (
       <header>
-        <div onClick={this.toggleDropdown}><i class="fa fa-bars" aria-hidden="true"></i></div>
+        <div onClick={this.toggleDropdown}><i className="fa fa-bars" aria-hidden="true"></i></div>
         <Dropdown
           toggleDropdown={this.toggleDropdown}
           logout={this.props.logout}

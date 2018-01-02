@@ -11,6 +11,8 @@ function StandupGraph(props) {
   }
   return (
     <svg
+      width="370"
+      height="300"
       className="standup-graph"
       onClick={(e) => {
         if(!props.dailySet && !props.apiDataLoaded){
