@@ -30,11 +30,12 @@ class Standup extends React.Component {
       sessionOpen: (this.props.token || this.props.tokenUrl ? true : false),
       graphType: 'live',
       apiDataLoaded: this.props.apiDataLoaded,
-      selectedDate: '',
+      selectedDate: false,
       standupDates: [],
       standupDatesLoaded: false,
       copied: false,
-      invalid: false
+      invalid: false,
+      dailyOverWrite: false
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.showForm = this.showForm.bind(this)
@@ -55,8 +56,16 @@ class Standup extends React.Component {
       .then(res => res.json())
       .then(res => {
         let d = new Date(Date.now())
-        d = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`
-        console.log(res.dates.find(el => el.time_created.match(d)))
+        let month = d.getMonth()+1
+        if(month.toString().length < 2){
+          month = '0' + month
+        }
+        let date = d.getDate()
+        if(date.toString().length < 2){
+          date = '0' + date
+        }
+        d = `${d.getFullYear()}-${month}-${date}`
+        console.log('finding selecteddate', res.dates.find(el => el.time_created.match(d)))
         let colors = ['red','green','blue','yellow','orange','purple','black']
         let cres = res.today.map((el) => {
           el.color = colors.pop()
@@ -72,7 +81,9 @@ class Standup extends React.Component {
           standupDatesLoaded: true,
           selectedDate: res.dates.find(el => el.time_created.match(d)),
           graphType: 'past-daily',
-          connectedUsers: cres
+          connectedUsers: cres,
+          apiDataLoaded: cres.length > 0 ? true : false,
+          dailySet: this.dailySet || cres.length > 0 ? true : false
         })
       }).catch(err => console.log(err))
     }
@@ -155,15 +166,22 @@ class Standup extends React.Component {
   }
 
   logSession() {
-    console.log('firing logsession')
+    let dailyOverWriteTest = false
     if(window.confirm('End this session, disconnecting all other users and saving this as your daily Standup?')){
+      if(this.state.dailyOverWrite){
+        dailyOverWriteTest = true
+        console.log('firing dailyOverWrite', dailyOverWriteTest)
+      }
       fetch(`/api/standup/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         credentials: 'include',
-        body: JSON.stringify(this.state.connectedUsers)
+        body: JSON.stringify({
+          connectedUsers: this.state.connectedUsers,
+          dailyOverWrite: dailyOverWriteTest
+        })
       })
       .then(res => {
         if(res.status === 200){
@@ -172,7 +190,9 @@ class Standup extends React.Component {
             token: this.state.currentStandup.token
           })
           this.setState({
-            graphType: 'past-daily'
+            graphType: 'past-daily',
+            dailySet: true,
+            dailyOverWrite: false
           })
         }else{
           console.log(res)
@@ -182,33 +202,37 @@ class Standup extends React.Component {
   }
 
   showInfoBox(event, id) {
-    event.stopPropagation()
-      // let x = event.nativeEvent.clientX;
-      // let y = event.nativeEvent.clientY;
-      let bound = document.querySelector(`.circle-${id}`)
-      if(bound){
-        bound = bound.getBoundingClientRect()
-        this.setState({
-          infoBoxShown: {
-            left: bound.x + bound.width,
-            top: bound.y + bound.height
-          }
-        })
-      }
-      if(id) {
-        let findSelectedStandup = this.state.connectedUsers.find((el) => el.id === id)
-        this.setState({
-          displayStandup: findSelectedStandup
-        })
+      event.stopPropagation()
+      if(this.state.infoBoxShown){
+        console.log('stopping')
+        this.hideInfoBox()
       }else{
-        this.setState({
-          displayStandup: this.state.currentStandup
-        })
+        let bound = document.querySelector(`.circle-${id}`)
+        if(bound){
+          bound = bound.getBoundingClientRect()
+          this.setState({
+            infoBoxShown: {
+              left: bound.x + bound.width,
+              top: bound.y + bound.height
+            }
+          })
+        }
+        if(id) {
+          let findSelectedStandup = this.state.connectedUsers.find((el) => el.id === id)
+          this.setState({
+            displayStandup: findSelectedStandup
+          })
+        }else{
+          this.setState({
+            displayStandup: this.state.currentStandup
+          })
+        }
+      document.body.addEventListener('click',this.hideInfoBox)
       }
-    document.body.addEventListener('click',this.hideInfoBox)
   }
 
-  hideInfoBox() {
+  hideInfoBox(event) {
+    // event.stopPropagation()
     console.log('firing hideInfoBox')
     this.setState({
       infoBoxShown: false
@@ -285,6 +309,7 @@ class Standup extends React.Component {
           standupDates={this.state.standupDates}
           standupDatesLoaded={this.state.standupDatesLoaded}
           handleSelectChange={this.handleSelectChange}
+          selectedDate={this.state.selectedDate}
         />
         {
           this.state.sessionOpen || this.props.user ?
@@ -297,8 +322,6 @@ class Standup extends React.Component {
               showForm={this.showForm}
               setCirclePosition={this.setCirclePosition}
               visible={this.state.visible}
-              xoffset={this.state.xoffset}
-              yoffset={this.state.yoffset}
               dailySet={this.state.dailySet}
               editable={true}
               showInfoBox={this.showInfoBox}
@@ -321,6 +344,10 @@ class Standup extends React.Component {
                     <div className="new-room-btn" onClick={(e) => {
                       if(this.state.apiDataLoaded && this.state.dailySet){
                         if(window.confirm("Warning: A Standup has already been saved for today. Data saved from a new session will overwrite this existing Standup. Continue anyway?")){
+                          this.setState({
+                            dailySet: false,
+                            dailyOverWrite: true
+                          })
                           this.props.getRoomToken()
                         }
                       }else{

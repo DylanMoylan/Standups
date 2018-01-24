@@ -11,7 +11,7 @@ body, html, #root, .App {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  /*background-image: url(./assets/Mountains_Streams-01.png)*/
+  background-image: url(./assets/Mountains_Streams-01.png)
 }
 
 a {

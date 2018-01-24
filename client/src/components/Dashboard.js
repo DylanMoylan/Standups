@@ -11,20 +11,20 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`/api/standup/${this.props.user.id}`, {
-      credentials: 'include'
-      })
-    .then(res => res.json())
-    .then(res => {
-      let colors = ['red','green','blue','yellow','orange','purple','black']
-      let cres = res.data.map((el) => {
-        return el.color = colors.pop()
-      })
-      this.setState({
-        standupHistory: cres,
-        apiDataLoaded: true
-      })
-    }).catch(err => console.log(err))
+    // fetch(`/api/standup/${this.props.user.id}`, {
+    //   credentials: 'include'
+    //   })
+    // .then(res => res.json())
+    // .then(res => {
+    //   let colors = ['red','green','blue','yellow','orange','purple','black']
+    //   let cres = res.data.map((el) => {
+    //     return el.color = colors.pop()
+    //   })
+    //   this.setState({
+    //     standupHistory: cres,
+    //     apiDataLoaded: true
+    //   })
+    // }).catch(err => console.log(err))
   }
 
   render () {

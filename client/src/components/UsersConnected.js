@@ -7,9 +7,10 @@ function UsersConnected(props) {
         <div>Users on
           {
             props.standupDatesLoaded && props.standupDates.length > 1 ?
-              <select value={props.selectedDate} onChange={props.handleSelectChange}>
+              <select value={props.selectedDate} onChange={(e) => {props.handleSelectChange(e)}}>
                 {
                   props.standupDates.map((el, index) => {
+                    console.log('standupDates users-connected',el)
                     return <option value={el.time_created.match(/([0-9]{4}-[0-9]+[-][0-9]{2})/)[1]} key={index}>{el.time_created.match(/([0-9]{4}-[0-9]+[-][0-9]{2})/)[1]}</option>
                   })
                 }
