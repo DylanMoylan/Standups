@@ -65,7 +65,13 @@ class Standup extends React.Component {
           date = '0' + date
         }
         d = `${d.getFullYear()}-${month}-${date}`
-        console.log('finding selecteddate', res.dates.find(el => el.time_created.match(d)))
+        let selectedDate = res.dates.find(el => el.time_created.match(d))
+        console.log('finding selecteddate', selectedDate)
+        if(selectedDate){
+          selectedDate = selectedDate.time_created.replace(/[tT].*/,'')
+        }else {
+          selectedDate = res.dates[0].time_created
+        }
         let colors = ['red','green','blue','yellow','orange','purple','black']
         let cres = res.today.map((el) => {
           el.color = colors.pop()
@@ -79,7 +85,7 @@ class Standup extends React.Component {
         this.setState({
           standupDates: res.dates,
           standupDatesLoaded: true,
-          selectedDate: res.dates.find(el => el.time_created.match(d)),
+          selectedDate: selectedDate,
           graphType: 'past-daily',
           connectedUsers: cres,
           apiDataLoaded: cres.length > 0 ? true : false,
