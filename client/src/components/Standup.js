@@ -46,54 +46,13 @@ class Standup extends React.Component {
     this.focusTextInput = this.focusTextInput.bind(this)
     this.hideInfoBox = this.hideInfoBox.bind(this)
     this.handleSelectChange = this.handleSelectChange.bind(this)
+    this.fetchDates = this.fetchDates.bind(this)
   }
 
   componentDidMount() {
     if(this.props.user) {
-      fetch('/api/standup/dates/', {
-        credentials: 'include'
-      })
-      .then(res => res.json())
-      .then(res => {
-        let d = new Date(Date.now())
-        let month = d.getMonth()+1
-        if(month.toString().length < 2){
-          month = '0' + month
-        }
-        let date = d.getDate()
-        if(date.toString().length < 2){
-          date = '0' + date
-        }
-        d = `${d.getFullYear()}-${month}-${date}`
-        let selectedDate = res.dates.find(el => el.time_created.match(d))
-        console.log('finding selecteddate', selectedDate)
-        if(selectedDate){
-          selectedDate = selectedDate.time_created.replace(/[tT].*/,'')
-        }else {
-          selectedDate = res.dates[0].time_created
-        }
-        let colors = ['red','green','blue','yellow','orange','purple','black']
-        let cres = res.today.map((el) => {
-          el.color = colors.pop()
-          let gp = el.graph_position.split(',')
-          el.graph_position = {
-            x: gp[0],
-            y: gp[1]
-          }
-          return el
-        })
-        this.setState({
-          standupDates: res.dates,
-          standupDatesLoaded: true,
-          selectedDate: selectedDate,
-          graphType: 'past-daily',
-          connectedUsers: cres,
-          apiDataLoaded: cres.length > 0 ? true : false,
-          dailySet: this.dailySet || cres.length > 0 ? true : false
-        })
-      }).catch(err => console.log(err))
+      this.fetchDates()
     }
-
     socket.emit('giveToken', this.state.currentStandup)
     // socket.emit('setGraph', this.state.currentStandup)
     socket.on('socket-users', (users) => {
@@ -146,6 +105,36 @@ class Standup extends React.Component {
     }
   }
 
+  fetchDates() {
+    fetch('/api/standup/dates/', {
+        credentials: 'include'
+      })
+      .then(res => res.json())
+      .then(res => {
+        let colors = ['red','green','blue','yellow','orange','purple','black']
+        let cres = res.today.map((el) => {
+          el.color = colors.pop()
+          let gp = el.graph_position.split(',')
+          el.graph_position = {
+            x: gp[0],
+            y: gp[1]
+          }
+          return el
+        })
+        let formatDate = res.dates[res.dates.length - 1].time_created.replace(/[tT].*/,'')
+        this.setState({
+          standupDates: res.dates,
+          standupDatesLoaded: true,
+          selectedDate: formatDate,
+          graphType: 'past-daily',
+          connectedUsers: cres,
+          apiDataLoaded: cres.length > 0 ? true : false,
+          dailySet: this.dailySet || cres.length > 0 ? true : false,
+          dailyOverWrite: false
+        })
+      }).catch(err => console.log(err))
+  }
+
   handleSelectChange(event) {
     this.setState({
       selectedDate: event.target.value
@@ -195,11 +184,7 @@ class Standup extends React.Component {
             user: this.props.user,
             token: this.state.currentStandup.token
           })
-          this.setState({
-            graphType: 'past-daily',
-            dailySet: true,
-            dailyOverWrite: false
-          })
+          this.fetchDates()
         }else{
           console.log(res)
         }

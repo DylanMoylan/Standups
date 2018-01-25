@@ -11,9 +11,8 @@ body, html, #root, .App {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  background-image: url(./assets/Mountains_Streams-01.png)
 }
-
+/*background-image: url(./assets/Mountains_Streams-01.png)*/
 a {
   text-decoration: none;
   color: inherit;
@@ -45,18 +44,13 @@ a {
   outline: -webkit-focus-ring-color auto 5px;
 }*/
 /*=====Persistent static navbar=====*/
-/*header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 99%;
+header {
   display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  background-color: black;
-  color:white;
-}*/
+  width: 100%;
+  justify-content: flex-end;
+  padding: .5rem 1rem;
+  box-sizing: border-box;
+}
 
 header a {
   text-decoration: none;
@@ -74,6 +68,7 @@ footer {
   bottom:0px;
   left:0px;
   width:100%;
+  box-sizing: border-box;
 }
 
 .header-dropdown {
