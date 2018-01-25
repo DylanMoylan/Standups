@@ -1,10 +1,12 @@
 import React from 'react'
-
+import { Picker } from 'emoji-mart'
+import '../../node_modules/emoji-mart/css/emoji-mart.css'
 function StandupForm(props) {
   return (
     <div className={props.visible ? 'standupForm' : 'standupForm hidden'}>
       <form onSubmit={(e) => {props.emitGraph(e)}}>
         <h3>Submit Standup</h3>
+        <Picker title="" emoji="" />
         <label>Name: <input type="text" onChange={props.handleInputChange} name="name" value={props.currentStandup ? props.currentStandup.name : ''} /></label>
         <label>Wins: <textarea onChange={props.handleInputChange} disabled={props.dailySet ? true : false} name="positives" value={props.currentStandup ? props.currentStandup.positives : ''} /></label>
         <label>Losses: <textarea onChange={props.handleInputChange} disabled={props.dailySet ? true : false} name="negatives" value={props.currentStandup ? props.currentStandup.negatives : ''} /></label>

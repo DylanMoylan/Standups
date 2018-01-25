@@ -1,6 +1,7 @@
 body, html {
   font-family: 'Open Sans', sans-serif;
 }
+
 body, html, #root, .App {
   height: 100%;
 }
@@ -11,8 +12,9 @@ body, html, #root, .App {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  color: #5c5c5c;
 }
-/*background-image: url(./assets/Mountains_Streams-01.png)*/
+
 a {
   text-decoration: none;
   color: inherit;
@@ -36,14 +38,15 @@ a {
   justify-content: center;
   align-items: flex-start;
 }
+
 .nodisplay {
   display:none !important;
 }
+
 .circle-container:hover .hoverable { outline: -webkit-focus-ring-color auto 5px; }
-./*hoverable:hover {
-  outline: -webkit-focus-ring-color auto 5px;
-}*/
+
 /*=====Persistent static navbar=====*/
+
 header {
   display: flex;
   width: 100%;
@@ -61,6 +64,10 @@ header span {
   cursor: pointer;
 }
 
+.header-toggle {
+  cursor: pointer;
+}
+
 footer {
   background-color: black;
   color:white;
@@ -73,8 +80,6 @@ footer {
 
 .header-dropdown {
   position: absolute;
-  color:black;
-  left:85%;
   top:7%;
   border:1px solid black;
   background-color: white;
@@ -82,8 +87,11 @@ footer {
 
 .header-dropdown li {
   padding: 10px 20px;
-  border-bottom: 1px solid black;
   cursor: pointer;
+}
+
+.header-dropdown li:not(:last-of-type) {
+  border-bottom: 1px solid black;
 }
 
 .header-dropdown li:hover {
@@ -149,16 +157,6 @@ input[type='submit']:not(.daily-set):hover {
   background-color: #4CAF50;
   color: whitesmoke;
 }
-/* input[type='submit'], .search-form-button {
-  border:none;
-  background-color: #7dff7d;
-  cursor: pointer;
-  font-size: inherit;
-  font-weight: inherit;
-  padding: 3px;
-  margin: 0 3px;
-  vertical-align: top;
-  font-family: inherit; */
 
 label {
   text-align: left;

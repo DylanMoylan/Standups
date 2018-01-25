@@ -121,7 +121,7 @@ class Standup extends React.Component {
           }
           return el
         })
-        let formatDate = res.dates[res.dates.length - 1].time_created.replace(/[tT].*/,'')
+        let formatDate = res.today.length > 0 ? res.today[0].time_created.replace(/[tT].*/,'') : res.dates[res.dates.length - 1].time_created.replace(/[tT].*/,'')
         this.setState({
           standupDates: res.dates,
           standupDatesLoaded: true,

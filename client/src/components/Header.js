@@ -1,15 +1,13 @@
 import React from 'react'
+// <li onClick={() => {
+//           props.deleteAccount()
+//         }}>Delete Account</li>
 
 function Dropdown(props) {
   return (
     <div className={ props.toggled ? 'header-dropdown' : 'nodisplay header-dropdown' }>
       <ul>
         <li onClick={() => {
-          props.toggleDropdown()
-          props.deleteAccount()
-        }}>Delete Account</li>
-        <li onClick={() => {
-          props.toggleDropdown()
           props.logout()
         }}>Logout</li>
       </ul>
@@ -25,17 +23,27 @@ class Header extends React.Component {
     }
     this.toggleDropdown = this.toggleDropdown.bind(this)
   }
+  componentDidMount() {
+    document.querySelector('body').addEventListener('click', this.toggleDropdown)
+  }
 
-  toggleDropdown() {
+  toggleDropdown(e) {
+    let drop = false;
+    if(e.target.className === 'header-toggle' || e.target.className === 'fa fa-bars') {
+      console.log('true')
+      drop = true;
+    }else{
+      console.log('false')
+    }
     this.setState({
-      dropDown: !this.state.dropDown
+      dropDown:drop
     })
   }
 
   render() {
     return (
       <header>
-        <div onClick={this.toggleDropdown}><i className="fa fa-bars" aria-hidden="true"></i></div>
+        <div className="header-toggle" onClick={this.toggleDropdown}><i className="fa fa-bars" aria-hidden="true"></i></div>
         <Dropdown
           toggleDropdown={this.toggleDropdown}
           logout={this.props.logout}
