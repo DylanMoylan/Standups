@@ -18,7 +18,8 @@ class Standup extends React.Component {
         positives: '',
         negatives: '',
         token: (this.props.token ? this.props.token : null),
-        name: (this.props.userName ? this.props.userName : this.props.user ? this.props.user.name : '')
+        name: (this.props.userName ? this.props.userName : this.props.user ? this.props.user.name : ''),
+        emoji: null
       },
       visible: false,
       dailySet: false,
@@ -35,7 +36,8 @@ class Standup extends React.Component {
       standupDatesLoaded: false,
       copied: false,
       invalid: false,
-      dailyOverWrite: false
+      dailyOverWrite: false,
+      emojiVisible: false
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.showForm = this.showForm.bind(this)
@@ -47,6 +49,8 @@ class Standup extends React.Component {
     this.hideInfoBox = this.hideInfoBox.bind(this)
     this.handleSelectChange = this.handleSelectChange.bind(this)
     this.fetchDates = this.fetchDates.bind(this)
+    this.setEmoji = this.setEmoji.bind(this)
+    this.toggleEmoji = this.toggleEmoji.bind(this)
   }
 
   componentDidMount() {
@@ -103,6 +107,21 @@ class Standup extends React.Component {
         connectedUsers: this.props.standupHistory
       })
     }
+  }
+
+  toggleEmoji() {
+    this.setState({
+      emojiVisible: !this.state.emojiVisible
+    })
+  }
+
+  setEmoji(emoji, event) {
+    this.setState({
+      currentStandup: Object.assign({}, this.state.currentStandup, {emoji: emoji.native})
+    })
+    let sendStandup = Object.assign({}, this.state.currentStandup, {emoji: emoji.native})
+    socket.emit('setGraph', sendStandup)
+    this.toggleEmoji()
   }
 
   fetchDates() {
@@ -363,6 +382,9 @@ class Standup extends React.Component {
           showForm={this.showForm}
           emitGraph={this.emitGraph}
           dailySet={this.state.dailySet}
+          setEmoji={this.setEmoji}
+          toggleEmoji={this.toggleEmoji}
+          emojiVisible={this.state.emojiVisible}
         />
       </div>
     )

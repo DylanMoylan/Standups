@@ -272,3 +272,16 @@ textarea:disabled {
 .copied {
   color: #7cd186;
 }
+
+.name-avatar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.toggle-emoji {
+  background-color: #dedede;
+  padding: .5em 1em;
+  cursor: pointer;
+}
